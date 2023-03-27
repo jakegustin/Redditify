@@ -1,11 +1,13 @@
 import logo from './logo.svg';
+import redditlogo from './redditlogo.png'
 import './App.css';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <h1>Redditify</h1>
+        <img src={redditlogo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
