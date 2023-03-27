@@ -36,3 +36,24 @@
     transform: rotate(360deg);
   }
 }
+
+.App-input-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 10px;
+  font-size: 30px;
+}
+
+label {
+  margin-right: 10px;
+}
+
+.App-username-input {
+  font-size: 25px;
+}
+
+.App-username-submit {
+  margin-top: 10px;
+  font-size: 20px;
+}
