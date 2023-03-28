@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import redditlogo from './redditlogo.png'
 import './App.css';
 import { Link } from 'react-router-dom';
@@ -13,8 +12,8 @@ function App() {
           Enter Reddit Username:
         </p>
         <div class="App-input-container">
-          <label for="username">u/</label>
-          <input className='App-username-input' type="text" id="username" name="username"></input>
+          <label for="usernameInput">u/</label>
+          <input className='App-username-input' type="text" id="usernameInput" name="username"></input>
         </div>
         <Link to="/button">
           <button className='App-username-submit'>Submit</button>
