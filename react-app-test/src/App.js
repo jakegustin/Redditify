@@ -17,8 +17,14 @@ function App() {
         <div className="App-input-container">
           <label for="usernameInput">u/</label>
           <input onChange={myInput => {
-            myName = myInput.target.value;
-          }}className='App-username-input' type="text" id="usernameInput" name="username"></input>
+            if (myInput.target.value !== '') {
+              myName = "u/" + myInput.target.value;
+            } else {
+              myName = 'Anonymous';
+            }
+          }}
+          className='App-username-input' type="text" id="usernameInput" name="username">
+          </input>
         </div>
         <Link to="/button">
           <button onClick={e => {
