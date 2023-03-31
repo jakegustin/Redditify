@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
+import { myName } from "./App.js";
 
 function ButtonTest() {
+    console.log("BUTTON");
+    console.log(myName);
     return(
         <div>
-            <h1>Welcome to Button Test!</h1>
+            <h1>Welcome to Button Test, {myName}!</h1>
             <Link to="/">
                 <button type="button">
                     Return to Home

@@ -2,7 +2,10 @@ import redditlogo from './redditlogo.png'
 import './App.css';
 import { Link } from 'react-router-dom';
 
+export let myName = 'Anonymous';
+
 function App() {
+  console.log("hello");
   return (
     <div className="App">
       <header className="App-header">
@@ -11,12 +14,19 @@ function App() {
         <p>
           Enter Reddit Username:
         </p>
-        <div class="App-input-container">
+        <div className="App-input-container">
           <label for="usernameInput">u/</label>
-          <input className='App-username-input' type="text" id="usernameInput" name="username"></input>
+          <input onChange={myInput => {
+            myName = myInput.target.value;
+            console.log(myInput.target.value);
+            console.log(myName);
+          }}className='App-username-input' type="text" id="usernameInput" name="username"></input>
         </div>
         <Link to="/button">
-          <button className='App-username-submit'>Submit</button>
+          <button onClick={e => {
+            console.log("yooo");
+            console.log(myName);
+          }} className='App-username-submit'>Submit</button>
         </Link>
       </header>
     </div>
