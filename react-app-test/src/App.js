@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 export let myName = 'Anonymous';
 
 function App() {
+  myName = 'Anonymous'
+  console.log("HOME " + myName);
   return (
     <div className="App">
       <header className="App-header">
