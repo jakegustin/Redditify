@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { myName } from "./App.js";
 
 function ButtonTest() {
-    console.log("BUTTON " + myName);
     return(
         <div>
             <h1>Welcome to Button Test, {myName}!</h1>
