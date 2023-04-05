@@ -19,7 +19,7 @@ function App() {
           <label for="usernameInput">u/</label>
           <input onChange={myInput => {
             if (myInput.target.value !== '') {
-              myName = "u/" + myInput.target.value;
+              myName = myInput.target.value;
             } else {
               myName = 'Anonymous';
             }

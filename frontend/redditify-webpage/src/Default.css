@@ -10,3 +10,10 @@
     font-size: calc(5px + 2vmin);
 }
 
+.PostNames{
+    font-size: 1.5em;
+    font-weight: bold;
+    color: lightgray;
+    align-items: baseline;
+    text-align: left;
+}
