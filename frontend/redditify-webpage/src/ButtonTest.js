@@ -1,25 +1,29 @@
 import React, {useState, useEffect } from "react";
-import { Link, json } from "react-router-dom";
+import { Link } from "react-router-dom";
 import './Default.css';
 import { myName } from "./App.js";
 
-function getMultiplePosts(res, num) {
+/*function getMultiplePosts(res, num) {
     var postNamesStr = ""
-    if (res.length < num) {
-        num = res.length;
+    if (res == null) {
+        var postNamesElem = document.getElementById('postNames');
+        postNamesElem.innerHTML = "No posts found.";
+        return postNamesElem;   
+    }
+    if (res.data.children.length < num) {
+        num = res.data.children.length;
+        console.log("num changed" + num)
     }
     for (var i = 0; i < num; i++) {
         postNamesStr = postNamesStr + "~ " + res.data.children[i].data.title + "<br>";
-        console.log(postNamesStr)
     }
     var postNamesElem = document.getElementById('postNames');
     postNamesElem.innerHTML = postNamesStr;
     return postNamesElem;
-}
+}*/
 
 function ButtonTest() {
-    var [test, setTest] = useState(''); 
-    var [myData, setMyData] = useState('');
+    var [posts, setPosts] = useState(''); 
 
 
     useEffect(() => {
@@ -32,19 +36,20 @@ function ButtonTest() {
         .then(response => response.json())
         .then(data => {
             console.log(data)
-            setMyData(data);
-            setTest(getMultiplePosts(data, 10));
-           console.log(data.data.children[0].data.title)
+            setPosts(data['postNames']);
+            console.log("Got data")
             })
         .catch(error => {
             console.log(error)
+            setPosts(error)
             })
     }, []);
     return(
         <div className="Default">
             <h1>Welcome to Redditify, u/{myName}!</h1>
             <h2>Here are some of your most recent posts:</h2>
-            <div id='postNames' className='PostNames' mypostnames={{__html: test}} />
+            {console.log(posts)}
+            <div className='PostNames' dangerouslySetInnerHTML={{__html: posts}} />
             <Link to="/">
                 <button type="button">
                     Return to Home
