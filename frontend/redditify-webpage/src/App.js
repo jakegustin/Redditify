@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import redditlogo from './redditlogo.png'
 import './App.css';
 import { Link } from 'react-router-dom';
