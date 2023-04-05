@@ -1,0 +1,12 @@
+To create a React project:
+1) Start node.js terminal
+2) npx create-react-App <project-directory>
+3) cd <project-directory>
+4) npm start
+
+
+Otherwise...
+1) Start node.js terminal
+2) Navigate to create-react-app directory
+2) npm start
+3) Make changes
