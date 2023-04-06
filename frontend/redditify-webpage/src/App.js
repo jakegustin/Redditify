@@ -27,9 +27,17 @@ function App() {
           className='App-username-input' type="text" id="usernameInput" name="username">
           </input>
         </div>
-        <Link to="/button">
+        <Link to="/userPosts">
           <button onClick={e => {
           }} className='App-username-submit'>Submit</button>
+        </Link>
+        <Link to="/loginPage">
+          <button onClick={e => {
+          }} className='App-username-submit'>Login to Spotify</button>
+        </Link>
+        <Link to="/topPosts">
+          <button onClick={e => {
+          }} className='App-username-submit'>See Reddit Top Posts</button>
         </Link>
       </header>
     </div>

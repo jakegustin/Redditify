@@ -1,19 +1,19 @@
 import React, {useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import './Default.css';
-import { myName } from "./App.js";
 
 function ButtonTest() {
     var [posts, setPosts] = useState(''); 
 
 
     useEffect(() => {
-        fetch('http://localhost:5000/userPosts', { 
-            method: 'POST',
+        fetch('http://localhost:5000/topposts', { 
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({'username': myName})})
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
+        })
         .then(response => response.json())
         .then(data => {
             console.log(data)
@@ -27,8 +27,7 @@ function ButtonTest() {
     }, []);
     return(
         <div className="Default">
-            <h1>Welcome to Redditify, u/{myName}!</h1>
-            <h2>Here are some of your most recent posts:</h2>
+            <h1>Top Posts on Reddit</h1>
             {console.log(posts)}
             <div className='PostNames' dangerouslySetInnerHTML={{__html: posts}} />
             <Link to="/">

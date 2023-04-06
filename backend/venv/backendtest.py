@@ -1,12 +1,12 @@
 from flask import Flask, jsonify, g, request, redirect, url_for
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import praw, spotipy, requests, json, sys, os
 from spotipy.oauth2 import SpotifyOAuth
 
 # intializes an instance of the flask app
 app = Flask(__name__) 
 # allows cross origin requests
-CORS(app, origins=['http://localhost:3000'])
+CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 
 # for /test endpoint, iterates through and returns 
 # the titles of the top 10 posts in the input
@@ -45,6 +45,7 @@ def index():
 
 #redirects user to spotify Oauth
 @app.route("/login")
+@cross_origin()
 def login():
     auth_url = sp_oauth.get_authorize_url()
     return redirect(auth_url)
@@ -60,11 +61,11 @@ def callback():
 
 @app.route("/topposts")
 def topposts(): #displays top 10 posts in r/all
-    posts= reddit.subreddit("all").top(limit=10)
+    posts = reddit.subreddit("all").top(limit=10)
     post_titles = [post.title for post in posts]
-    return jsonify(post_titles)
+    return {'postNames': post_titles}
 
-@app.route("/test", methods=['POST'])
+@app.route("/userPosts", methods=['POST'])
 def getPosts():
     data= request.get_json()
     user = data['username']

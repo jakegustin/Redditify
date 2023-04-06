@@ -5,13 +5,17 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ButtonTest from './ButtonTest';
+import Login from './Login';
+import TopPosts from './TopPosts';
 
 export default function Root() {
   return (
     <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />} />
-      <Route path="/button" element={<ButtonTest />} />
+      <Route path="/userPosts" element={<ButtonTest />} />
+      <Route path="/loginPage" element={<Login />} />
+      <Route path="/topPosts" element={<TopPosts />} />
     </Routes>
   </BrowserRouter>
   )
