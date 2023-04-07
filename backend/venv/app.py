@@ -10,7 +10,7 @@ CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 
 # for /test endpoint, iterates through and returns 
 # the titles of the top 10 posts in the input
-def get_multiple_posts(res, num):
+def get_multiple_user_posts(res, num):
     post_names_str = ""
     if res is None:
         return "No posts found."
@@ -18,6 +18,16 @@ def get_multiple_posts(res, num):
         num = len(res["data"]["children"])
     for i in range(num):
         post_names_str += "~ " + res["data"]["children"][i]["data"]["title"] + "<br>"
+    return post_names_str
+
+def get_multiple_top_posts(res, num):
+    post_names_str = ""
+    if res is None:
+        return "No posts found."
+    if len(res) < num:
+        num = len(res)
+    for i in range(num):
+        post_names_str += "~ " + res[i] + "<br>"
     return post_names_str
 
 #secret key to protect user session data in flask
@@ -63,14 +73,17 @@ def callback():
 def topposts(): #displays top 10 posts in r/all
     posts = reddit.subreddit("all").top(limit=10)
     post_titles = [post.title for post in posts]
-    return {'postNames': post_titles}
+    print(post_titles)
+    postNamesStr = get_multiple_top_posts(post_titles, 10)
+    print(postNamesStr)
+    return {'postNames': postNamesStr}
 
 @app.route("/userPosts", methods=['POST'])
 def getPosts():
     data= request.get_json()
     user = data['username']
     res = requests.get('https://www.reddit.com/user/' + user + '/submitted.json', headers = {'User-agent': 'redditifybot 0.0.1'})
-    postNamesStr = get_multiple_posts(res.json(), 10)
+    postNamesStr = get_multiple_user_posts(res.json(), 10)
     print(postNamesStr)
     return {'postNames': postNamesStr}
 

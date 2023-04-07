@@ -2,8 +2,21 @@ import React, {useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import './Default.css';
 
-function ButtonTest() {
-    var [posts, setPosts] = useState(''); 
+function TopPosts() {
+    var [topposts, setTopPosts] = useState(''); 
+
+    /*async function formatPostsFromJSON(json) {
+        console.log(json)
+        const myPosts = topposts
+        const myObject = JSON.parse(myPosts)
+        const myStringList = document.getElementById('stringlist');
+        myObject.children.forEach((string) => {
+            const li = document.createElement('li');
+            const textitem = document.createTextNode(string);
+            li.appendChild(string);
+            myStringList.appendChild(li);
+        })
+    }*/
 
 
     useEffect(() => {
@@ -17,19 +30,18 @@ function ButtonTest() {
         .then(response => response.json())
         .then(data => {
             console.log(data)
-            setPosts(data['postNames']);
+            setTopPosts(data['postNames']);
             console.log("Got data")
             })
         .catch(error => {
             console.log(error)
-            setPosts(error)
+            setTopPosts(error)
             })
     }, []);
     return(
         <div className="Default">
             <h1>Top Posts on Reddit</h1>
-            {console.log(posts)}
-            <div className='PostNames' dangerouslySetInnerHTML={{__html: posts}} />
+            <div className='PostNames' dangerouslySetInnerHTML={{__html: topposts}} />
             <Link to="/">
                 <button type="button">
                     Return to Home
@@ -39,4 +51,4 @@ function ButtonTest() {
     );
 }
 
-export default ButtonTest;
+export default TopPosts;
