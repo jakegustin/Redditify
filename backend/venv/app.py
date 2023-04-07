@@ -82,7 +82,7 @@ def topposts(): #displays top 10 posts in r/all
 def getPosts():
     data= request.get_json()
     user = data['username']
-    res = requests.get('https://www.reddit.com/user/' + user + '/submitted.json', headers = {'User-agent': 'redditifybot 0.0.1'})
+    res = requests.get('https://www.reddit.com/user/' + user + '/submitted/?sort=new.json', headers = {'User-agent': 'redditifybot 0.0.1'})
     postNamesStr = get_multiple_user_posts(res.json(), 10)
     print(postNamesStr)
     return {'postNames': postNamesStr}
