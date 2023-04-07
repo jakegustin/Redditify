@@ -8,19 +8,8 @@ app = Flask(__name__)
 # allows cross origin requests
 CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 
-# for /test endpoint, iterates through and returns 
-# the titles of the top 10 posts in the input
-def get_multiple_user_posts(res, num):
-    post_names_str = ""
-    if res is None:
-        return "No posts found."
-    if len(res["data"]["children"]) < num:
-        num = len(res["data"]["children"])
-    for i in range(num):
-        post_names_str += "~ " + res["data"]["children"][i]["data"]["title"] + "<br>"
-    return post_names_str
-
-def get_multiple_top_posts(res, num):
+# name says it all - gets multiple posts from a list of post titles
+def get_multiple_posts(res, num):
     post_names_str = ""
     if res is None:
         return "No posts found."
@@ -74,7 +63,7 @@ def topposts(): #displays top 10 posts in r/all
     posts = reddit.subreddit("all").top(limit=10)
     post_titles = [post.title for post in posts]
     print(post_titles)
-    postNamesStr = get_multiple_top_posts(post_titles, 10)
+    postNamesStr = get_multiple_posts(post_titles, 10)
     print(postNamesStr)
     return {'postNames': postNamesStr}
 
@@ -82,8 +71,11 @@ def topposts(): #displays top 10 posts in r/all
 def getPosts():
     data= request.get_json()
     user = data['username']
-    res = requests.get('https://www.reddit.com/user/' + user + '/submitted/?sort=new.json', headers = {'User-agent': 'redditifybot 0.0.1'})
-    postNamesStr = get_multiple_user_posts(res.json(), 10)
+    reddituser = reddit.redditor(user)
+    posts = reddituser.submissions.new(limit=10)
+    post_titles = [post.title for post in posts]
+    print(post_titles)
+    postNamesStr = get_multiple_posts(post_titles, 10)
     print(postNamesStr)
     return {'postNames': postNamesStr}
 
