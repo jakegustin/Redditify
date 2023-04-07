@@ -4,9 +4,11 @@ import './Default.css';
 import { myName } from "./App.js";
 
 function ButtonTest() {
+    //using useState to declare and assign setPosts
+    //represents the posts received from the backend
     var [posts, setPosts] = useState(''); 
 
-
+    //fetching the posts from the backend
     useEffect(() => {
         fetch('http://localhost:5000/userPosts', { 
             method: 'POST',
@@ -27,10 +29,12 @@ function ButtonTest() {
     }, []);
     return(
         <div className="Default">
+            {/*Basic titles and then a preformatted list should appear*/}
             <h1>Welcome to Redditify, u/{myName}!</h1>
             <h2>Here are some of your most recent posts:</h2>
             {console.log(posts)}
             <div className='PostNames' dangerouslySetInnerHTML={{__html: posts}} />
+            {/*Button to return to home page*/}
             <Link to="/">
                 <button type="button">
                     Return to Home

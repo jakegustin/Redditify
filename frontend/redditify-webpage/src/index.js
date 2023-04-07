@@ -11,6 +11,7 @@ import TopPosts from './TopPosts';
 export default function Root() {
   return (
     <BrowserRouter>
+    {/*generally is not seen by user, links webpages to files/functions*/}
     <Routes>
       <Route path="/" element={<App />} />
       <Route path="/userPosts" element={<ButtonTest />} />
@@ -21,6 +22,7 @@ export default function Root() {
   )
 }
 
+// Initialization of React app
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

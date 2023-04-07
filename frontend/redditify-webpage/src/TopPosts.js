@@ -3,23 +3,11 @@ import { Link } from "react-router-dom";
 import './Default.css';
 
 function TopPosts() {
-    var [topposts, setTopPosts] = useState(''); 
-
-    /*async function formatPostsFromJSON(json) {
-        console.log(json)
-        const myPosts = topposts
-        const myObject = JSON.parse(myPosts)
-        const myStringList = document.getElementById('stringlist');
-        myObject.children.forEach((string) => {
-            const li = document.createElement('li');
-            const textitem = document.createTextNode(string);
-            li.appendChild(string);
-            myStringList.appendChild(li);
-        })
-    }*/
-
+    //declaring variable / initialization function for top posts
+    var [topposts, setTopPosts] = useState('');
 
     useEffect(() => {
+        //fetching top posts from backend
         fetch('http://localhost:5000/topposts', { 
             method: 'GET',
             headers: {
@@ -27,19 +15,19 @@ function TopPosts() {
                 'Access-Control-Allow-Origin': '*'
             }
         })
+        //If we get a response, assign it accordingly
+        //If we get an error, log it instead
         .then(response => response.json())
         .then(data => {
-            console.log(data)
             setTopPosts(data['postNames']);
-            console.log("Got data")
             })
         .catch(error => {
             console.log(error)
-            setTopPosts(error)
             })
     }, []);
     return(
         <div className="Default">
+            {/*Basic title and then a preformatted list should appear*/}
             <h1>Top Posts on Reddit</h1>
             <div className='PostNames' dangerouslySetInnerHTML={{__html: topposts}} />
             <Link to="/">
