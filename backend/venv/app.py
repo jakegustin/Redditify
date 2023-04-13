@@ -73,11 +73,16 @@ def getPosts():
     user = data['username']
     reddituser = reddit.redditor(user)
     posts = reddituser.submissions.new(limit=10)
-    post_titles = [post.title for post in posts]
-    print(post_titles)
-    postNamesStr = get_multiple_posts(post_titles, 10)
-    print(postNamesStr)
-    return {'postNames': postNamesStr}
+    try:
+        item1 = next(posts)
+    except:
+        return {'postNames': 'No posts found.'}
+    else:
+        post_titles = [post.title for post in posts]
+        print(post_titles)
+        postNamesStr = get_multiple_posts(post_titles, 10)
+        print(postNamesStr)
+        return {'postNames': postNamesStr}
 
 
 
