@@ -49,6 +49,10 @@ function App() {
           <button onClick={e => {
           }} className='App-username-submit'>Switch to Subreddit Search</button>
         </Link>
+        <Link to="/loginForm">
+          <button onClick={e => {
+          }} className='App-username-submit'>Login / Register</button>
+        </Link>
       </header>
     </div>
   );

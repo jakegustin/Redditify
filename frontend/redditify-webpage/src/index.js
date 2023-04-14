@@ -9,6 +9,9 @@ import Login from './Login';
 import TopPosts from './TopPosts';
 import Subreddit from './Subreddit';
 import SubredditTest from './SubredditTest';
+import RegisterForm from './RegisterForm';
+import LoginForm from './LoginForm';
+import LoginStatus from './LoginStatus';
 
 export default function Root() {
   return (
@@ -21,6 +24,9 @@ export default function Root() {
       <Route path="/topPosts" element={<TopPosts />} />
       <Route path="/subredditSearch" element={<Subreddit />} />
       <Route path="/subredditPosts" element={<SubredditTest />} />
+      <Route path="/registerForm" element={<RegisterForm />} />
+      <Route path="/loginForm" element={<LoginForm />} />
+      <Route path="/loginStatus" element={<LoginStatus />} />
     </Routes>
   </BrowserRouter>
   )
