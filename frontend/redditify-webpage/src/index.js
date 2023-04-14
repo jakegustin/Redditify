@@ -7,6 +7,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ButtonTest from './ButtonTest';
 import Login from './Login';
 import TopPosts from './TopPosts';
+import Subreddit from './Subreddit';
+import SubredditTest from './SubredditTest';
 
 export default function Root() {
   return (
@@ -17,6 +19,8 @@ export default function Root() {
       <Route path="/userPosts" element={<ButtonTest />} />
       <Route path="/loginPage" element={<Login />} />
       <Route path="/topPosts" element={<TopPosts />} />
+      <Route path="/subredditSearch" element={<Subreddit />} />
+      <Route path="/subredditPosts" element={<SubredditTest />} />
     </Routes>
   </BrowserRouter>
   )

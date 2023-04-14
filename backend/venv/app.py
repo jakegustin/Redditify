@@ -67,6 +67,7 @@ def topposts(): #displays top 10 posts in r/all
     print(postNamesStr)
     return {'postNames': postNamesStr}
 
+
 @app.route("/userPosts", methods=['POST'])
 def getPosts():
     data= request.get_json()
@@ -75,6 +76,23 @@ def getPosts():
     posts = reddituser.submissions.new(limit=10)
     try:
         item1 = next(posts)
+    except:
+        return {'postNames': 'No posts found.'}
+    else:
+        post_titles = [post.title for post in posts]
+        print(post_titles)
+        postNamesStr = get_multiple_posts(post_titles, 10)
+        print(postNamesStr)
+        return {'postNames': postNamesStr}
+    
+@app.route("/subredditPosts", methods=['POST'])
+def getSubredditPosts():
+    data= request.get_json()
+    sr = data['subreddit']
+    subreddit = reddit.subreddit(sr)
+    posts = subreddit.hot(limit=10)
+    try:
+        item2 = next(posts)
     except:
         return {'postNames': 'No posts found.'}
     else:
