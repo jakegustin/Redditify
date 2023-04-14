@@ -6,7 +6,8 @@ import { myName } from "./App.js";
 function ButtonTest() {
     //using useState to declare and assign setPosts
     //represents the posts received from the backend
-    var [posts, setPosts] = useState(''); 
+    var [posts, setPosts] = useState('');
+    var [loading, setLoading] = useState(true); 
 
     //fetching the posts from the backend
     useEffect(() => {
@@ -21,10 +22,12 @@ function ButtonTest() {
             console.log(data)
             setPosts(data['postNames']);
             console.log("Got data")
+            setLoading(false);
             })
         .catch(error => {
             console.log(error)
             setPosts(error)
+            setLoading(false);
             })
     }, []);
     return(
@@ -33,7 +36,9 @@ function ButtonTest() {
             <h1>Welcome to Redditify, u/{myName}!</h1>
             <h2>Here are some of your most recent posts:</h2>
             {console.log(posts)}
-            <div className='PostNames' dangerouslySetInnerHTML={{__html: posts}} />
+            <div className='PostNames'> 
+                {loading ? 'Loading...' : <div dangerouslySetInnerHTML={{__html: posts}} /> }
+            </div>
             {/*Button to return to home page*/}
             <Link to="/">
                 <button type="button">
