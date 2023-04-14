@@ -12,18 +12,33 @@ function RegisterForm() {
   //username = ''
   var [username, setUsername] = useState('');
   var [password, setPassword] = useState('');
+  var [confirmPassword, setConfirmPassword] = useState('');
   var [redditName, setRedditName] = useState('');
-  var [defaultReddit, setDefaultReddit] = useState(false);
+  var [inputError, setInputError] = useState(false);
+  var [errorReason, setErrorReason] = useState('');
+
+  {/* Checks if input is non-empty and passwords match, redirects if all good */}
+  function checkInput() {
+    if (username === '' || password === '' || redditName === '' || confirmPassword === '') {
+      setInputError(true);
+      setErrorReason('Empty fields');
+    } else if (password !== confirmPassword) {
+      setInputError(true);
+      setErrorReason('Passwords do not match');
+    } else {
+      window.location.href = '/loginStatus';
+    }
+  }
   return (
     <div className="App">
       <header className="App-header">
-        {/*title and spinny logo :) */}
+        {/*title */}
         <h1>Redditify Registration</h1>
-        {/*input prompt and box */}
+        {/*input prompts and boxes */}
         <div className="Login-input-container">
           <label for="usernameInput">Username:</label>
           <input onChange={myInput => {
-              username = myInput.target.value;
+              setUsername(myInput.target.value);
           }}
           className='App-username-input' type="text" id="usernameInput" name="username">
           </input>
@@ -31,7 +46,7 @@ function RegisterForm() {
         <div className="Login-input-container">
           <label for="passwordInput">Password:</label>
           <input onChange={myInput => {
-              password = myInput.target.value;
+              setPassword(myInput.target.value);
           }}
           className='App-username-input' type="password" id="passwordInput" name="password">
           </input>
@@ -39,9 +54,9 @@ function RegisterForm() {
         <div className="Login-input-container">
           <label for="confirmPasswordInput">Confirm Password:</label>
           <input onChange={myInput => {
-              password = myInput.target.value;
+              setConfirmPassword(myInput.target.value);
           }}
-          className='App-username-input' type="password" id="confirmPasswordInput" name="password">
+          className='App-username-input' type="password" id="confirmPasswordInput" name="confirmPassword">
           </input>
         </div>
         <div className="Login-input-container">
@@ -50,16 +65,16 @@ function RegisterForm() {
         <div className="Login-input-redditName-container">
           <label for="redditNameInput">r/</label>
           <input onChange={myInput => {
-              password = myInput.target.value;
+              setRedditName(myInput.target.value);
           }}
           className='App-username-input' type="text" id="redditNameInput" name="password">
           </input>
         </div>
+        {/*Display error message if needed */}
+        {inputError && <p>Invalid input: {errorReason}.</p>}
         {/*buttons to navigate to other pages */}
-        <Link to="/loginStatus">
-          <button onClick={e => {
+          <button onClick={e => {checkInput()
           }} className='App-username-submit'>Register</button>
-        </Link>
         <Link to="/loginform">
           <button onClick={e => {
           }} className='App-username-submit'>Existing User? Log In</button>

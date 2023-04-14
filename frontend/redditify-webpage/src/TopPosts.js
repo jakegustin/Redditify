@@ -5,6 +5,7 @@ import './Default.css';
 function TopPosts() {
     //declaring variable / initialization function for top posts
     var [topposts, setTopPosts] = useState('');
+    var [loading, setLoading] = useState(true);
 
     useEffect(() => {
         //fetching top posts from backend
@@ -20,16 +21,20 @@ function TopPosts() {
         .then(response => response.json())
         .then(data => {
             setTopPosts(data['postNames']);
+            setLoading(false);
             })
         .catch(error => {
             console.log(error)
+            setLoading(false);
             })
     }, []);
     return(
         <div className="Default">
             {/*Basic title and then a preformatted list should appear*/}
             <h1>Top Posts on Reddit</h1>
-            <div className='PostNames' dangerouslySetInnerHTML={{__html: topposts}} />
+            <div className="PostNames">
+            {loading ? 'Loading...' : <div dangerouslySetInnerHTML={{__html: topposts}} /> }
+            </div>
             <Link to="/">
                 <button type="button">
                     Return to Home
