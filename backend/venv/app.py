@@ -8,8 +8,10 @@ app = Flask(__name__)
 # allows cross origin requests
 CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 # stores access token across the whole app
+global access_token 
 access_token = ""
 # stores Spotipy instance
+global sp
 sp = None
 
 # name says it all - gets multiple posts from a list of post titles
@@ -55,6 +57,7 @@ def login():
 
 @app.route("/callback")
 def callback():
+    global access_token, sp
     code = request.args.get("code")
     token_info = sp_oauth.get_access_token(code)
     if "error" in token_info:
@@ -68,17 +71,19 @@ def callback():
     playlists = sp.current_user_playlists()
     return playlists
 
-""" UNDER CONSTRUCTION
-@app.route("/getPlaylists", methods=['POST'])
+
+@app.route("/getPlaylists")
+@cross_origin()
 def getPlaylists():
+    global access_token, sp
+    if access_token == "":
+        return {'error': 'No access token.', 'playlistNames': '(Not applicable)'}
     sp = spotipy.Spotify(auth=access_token)
     playlists = sp.current_user_playlists()
-    #playlist_names = [playlist['name'] for playlist in playlists['items']]
-    #playlist_names_str = get_multiple_posts(playlist_names, 10)
-    #print(playlist_names_str)
-    #return {'playlistNames': playlist_names_str}
-    return playlists
-"""
+    playlist_names = [playlist['name'] for playlist in playlists['items']]
+    playlist_names_str = get_multiple_posts(playlist_names, 10)
+    print(playlist_names_str)
+    return {'error': '', 'playlistNames': playlist_names_str}
 
 @app.route("/topposts")
 def topposts(): #displays top 10 posts in r/all
