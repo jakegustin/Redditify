@@ -10,16 +10,6 @@ function SpotifyPlaylists() {
     var [loading, setLoading] = useState(true);
     var [errorMessage, setErrorMessage] = useState('');
 
-    function checkSuccess(res) {
-        errorMessage = res['error'];
-        if (errorMessage !== '') {
-          return <p>Error: {errorMessage}. Please try again.</p>;
-        }
-        return <div className='PostNames'> 
-        {loading ? 'Loading...' : <div dangerouslySetInnerHTML={{__html: playlists}} /> }
-       </div>
-      }
-
     //fetching the posts from the backend
     useEffect(() => {
         fetch('http://localhost:5000/getPlaylists', { 
@@ -31,11 +21,11 @@ function SpotifyPlaylists() {
         .then(response => response.json())
         .then(data => {
             console.log(data)
-            if (data['error']) {
+            if (data['error']) { //In case an error was identified - i.e. access token not stored yet
                 setErrorMessage(data['error']);
                 console.log(data['error'])
             }
-            setPlaylists(data['playlistNames']);
+            setPlaylists(data['playlistNames']); //set playlist names accordingly
             console.log("Got data")
             setLoading(false);
             })
@@ -47,7 +37,7 @@ function SpotifyPlaylists() {
     }, []);
     return(
         <div className="Default">
-            {/*Basic titles and then a preformatted list should appear*/}
+            {/*Basic titles and then a preformatted list should appear unless it errors*/}
             {console.log(playlists)}
             <h1>Your Spotify Playlists</h1>
             <h2>Here are some of your most recent playlists:</h2>
