@@ -37,10 +37,14 @@ function App() {
           <button onClick={e => {
           }} className='App-username-submit'>Submit</button>
         </Link>
-        <Link to="/loginPage">
+        <Link to="/spotifyLogin">
           <button onClick={e => {
           }} className='App-username-submit'>Login to Spotify</button>
         </Link>
+        <Link to="/spotifyPlaylists">
+          <button onClick={e => {
+          }} className='App-username-submit'>See Spotify Playlists</button>
+        </Link>        
         <Link to="/topPosts">
           <button onClick={e => {
           }} className='App-username-submit'>See Reddit Top Posts</button>

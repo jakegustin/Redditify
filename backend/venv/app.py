@@ -7,6 +7,10 @@ from spotipy.oauth2 import SpotifyOAuth
 app = Flask(__name__) 
 # allows cross origin requests
 CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
+# stores access token across the whole app
+access_token = ""
+# stores Spotipy instance
+sp = None
 
 # name says it all - gets multiple posts from a list of post titles
 def get_multiple_posts(res, num):
@@ -53,10 +57,28 @@ def login():
 def callback():
     code = request.args.get("code")
     token_info = sp_oauth.get_access_token(code)
+    if "error" in token_info:
+        error = token_info["error"]
+        return redirect("http://localhost:3000/spotifyLoginStatus?status=error&errorcode=" + error)
     access_token = token_info["access_token"]
     sp = spotipy.Spotify(auth=access_token)
+    return redirect("http://localhost:3000/spotifyLoginStatus?status=success")
+    
+    # ATTEMPTING TO IMPLEMENT IN GETPLAYLISTS
     playlists = sp.current_user_playlists()
     return playlists
+
+""" UNDER CONSTRUCTION
+@app.route("/getPlaylists", methods=['POST'])
+def getPlaylists():
+    sp = spotipy.Spotify(auth=access_token)
+    playlists = sp.current_user_playlists()
+    #playlist_names = [playlist['name'] for playlist in playlists['items']]
+    #playlist_names_str = get_multiple_posts(playlist_names, 10)
+    #print(playlist_names_str)
+    #return {'playlistNames': playlist_names_str}
+    return playlists
+"""
 
 @app.route("/topposts")
 def topposts(): #displays top 10 posts in r/all
