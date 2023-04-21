@@ -41,6 +41,10 @@ function Subreddit() {
           <button onClick={e => {
           }} className='App-username-submit'>Login to Spotify</button>
         </Link>
+        <Link to="/spotifyPlaylists">
+          <button onClick={e => {
+          }} className='App-username-submit'>See Spotify Playlists</button>
+        </Link>  
         <Link to="/topPosts">
           <button onClick={e => {
           }} className='App-username-submit'>See Reddit Top Posts</button>
