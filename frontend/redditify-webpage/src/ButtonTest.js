@@ -47,9 +47,9 @@ function ButtonTest() {
                     Return to Home
                 </button>
             </Link>
-            <Link to="/playlistTest">
+            <Link to="/createUserPlaylist">
                 <button type="button">
-                    PLAYLIST TEST
+                    Create Spotify Playlist
                 </button>
             </Link>
         </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { debounce } from 'lodash';
 import './App.css'
 import { myName } from "./App.js";;
 
@@ -10,46 +11,48 @@ import { myName } from "./App.js";;
 //export let username = '';
 //export let password = '';
 
-function SpotifyPlaylistGen() {
+function UserSpotifyPlaylistGen() {
   //using useState to declare and assign setPosts
   //represents the posts received from the backend
   var [playlists, setPlaylists] = useState('');
   var [loading, setLoading] = useState(true);
   var [errorMessage, setErrorMessage] = useState('');
+  var [searchTerm, setSearchTerm] = useState(myName);
 
-  //fetching the posts from the backend
-    useEffect(() => {
-      fetch('http://localhost:5000/createSpotifyPlaylist', { 
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*'
-          },
-          body: JSON.stringify({'username': myName})
-      })
+  const debouncedFetch = debounce((searchTerm) => {
+    setLoading(true);
+    fetch('http://localhost:5000/createUserSpotifyPlaylist', { 
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: JSON.stringify({ 'username': searchTerm })
+    })
       .then(response => response.json())
       .then(data => {
-          console.log(data)
-          if (data['error']) { //In case an error was identified - i.e. access token not stored yet
-              setErrorMessage(data['error']);
-              console.log(data['error'])
-          }
-          setPlaylists(data['playlistNames']); //set playlist names accordingly
-          console.log("Got data")
-          setLoading(false);
-          })
+        if (data['error']) {
+          setErrorMessage(data['error']);
+        } else {
+          setPlaylists(data['status']);
+        }
+        setLoading(false);
+      })
       .catch(error => {
-          console.log(error)
-          setPlaylists(error)
-          setLoading(false);
-          })
-  }, []);
+        setErrorMessage(error);
+        setLoading(false);
+      });
+  }, 500);
+
+  useEffect(() => {
+    debouncedFetch(searchTerm);
+  }, [searchTerm]);
   return(
       <div className="Default">
           {/*Basic titles and then a preformatted list should appear unless it errors*/}
           {console.log(playlists)}
-          <h1>Your Spotify Playlists</h1>
-          <h2>Here are some of your most recent playlists:</h2>
+          <h1>Redditify</h1>
+          <h2>Spotify Playlist Generation</h2>
           {console.log(errorMessage)}
           {(errorMessage !== '') ? <p>Error: {errorMessage}. Please try logging in again.</p>
            : <div className='PostNames'> 
@@ -66,4 +69,4 @@ function SpotifyPlaylistGen() {
   );
 }
 
-export default SpotifyPlaylistGen;
+export default UserSpotifyPlaylistGen;

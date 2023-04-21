@@ -47,6 +47,11 @@ function SubredditTest() {
                     Return to Home
                 </button>
             </Link>
+            <Link to="/createSubredditPlaylist">
+                <button type="button">
+                    Generate Spotify Playlist
+                </button>
+            </Link>
         </div>
     );
 }
