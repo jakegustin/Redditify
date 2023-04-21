@@ -14,6 +14,9 @@ import LoginForm from './LoginForm';
 import LoginStatus from './LoginStatus';
 import SpotifyLoginStatus from './SpotifyLoginStatus';
 import SpotifyPlaylists from './SpotifyPlaylists';
+import SpotifyPlaylistGen from './PlaylistGenerator';
+
+//Index.js: The root of the React app, which renders the App component
 
 export default function Root() {
   return (
@@ -31,6 +34,7 @@ export default function Root() {
       <Route path="/loginStatus" element={<LoginStatus />} />
       <Route path="/spotifyLoginStatus" element={<SpotifyLoginStatus />} />
       <Route path="/spotifyPlaylists" element={<SpotifyPlaylists />} />
+      <Route path="/playlistTest" element={<SpotifyPlaylistGen />} />
       <Route path="*" element={<h1>404: Not Found</h1>} />
     </Routes>
   </BrowserRouter>

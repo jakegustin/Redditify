@@ -47,6 +47,11 @@ function ButtonTest() {
                     Return to Home
                 </button>
             </Link>
+            <Link to="/playlistTest">
+                <button type="button">
+                    PLAYLIST TEST
+                </button>
+            </Link>
         </div>
     );
 }
