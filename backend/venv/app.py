@@ -7,6 +7,12 @@ from spotipy.oauth2 import SpotifyOAuth
 app = Flask(__name__) 
 # allows cross origin requests
 CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
+# stores access token across the whole app
+global access_token 
+access_token = ""
+# stores Spotipy instance
+global sp
+sp = None
 
 # name says it all - gets multiple posts from a list of post titles
 def get_multiple_posts(res, num):
@@ -49,15 +55,38 @@ def login():
     auth_url = sp_oauth.get_authorize_url()
     return redirect(auth_url)
 
+#default spotify callback path - confirming if token exists
 @app.route("/callback")
 def callback():
+    global access_token, sp
     code = request.args.get("code")
     token_info = sp_oauth.get_access_token(code)
+    if "error" in token_info:
+        error = token_info["error"]
+        return redirect("http://localhost:3000/spotifyLoginStatus?status=error&errorcode=" + error)
     access_token = token_info["access_token"]
     sp = spotipy.Spotify(auth=access_token)
+    return redirect("http://localhost:3000/spotifyLoginStatus?status=success")
+    
+    # ATTEMPTING TO IMPLEMENT IN GETPLAYLISTS
     playlists = sp.current_user_playlists()
     return playlists
 
+#Gathers a user's spotify playlists
+@app.route("/getPlaylists")
+@cross_origin()
+def getPlaylists():
+    global access_token, sp
+    if access_token == "":
+        return {'error': 'No access token.', 'playlistNames': '(Not applicable)'}
+    sp = spotipy.Spotify(auth=access_token)
+    playlists = sp.current_user_playlists()
+    playlist_names = [playlist['name'] for playlist in playlists['items']]
+    playlist_names_str = get_multiple_posts(playlist_names, 10)
+    print(playlist_names_str)
+    return {'error': '', 'playlistNames': playlist_names_str}
+
+#Gathers the top posts in reddit of all time
 @app.route("/topposts")
 def topposts(): #displays top 10 posts in r/all
     posts = reddit.subreddit("all").top(limit=10)
@@ -67,17 +96,41 @@ def topposts(): #displays top 10 posts in r/all
     print(postNamesStr)
     return {'postNames': postNamesStr}
 
+#Gathers a chosen user's most recent posts
 @app.route("/userPosts", methods=['POST'])
 def getPosts():
     data= request.get_json()
     user = data['username']
     reddituser = reddit.redditor(user)
     posts = reddituser.submissions.new(limit=10)
-    post_titles = [post.title for post in posts]
-    print(post_titles)
-    postNamesStr = get_multiple_posts(post_titles, 10)
-    print(postNamesStr)
-    return {'postNames': postNamesStr}
+    try: #If no posts exist, return 'no posts found'
+        item1 = next(posts)
+    except:
+        return {'postNames': 'No posts found.'}
+    else:
+        post_titles = [post.title for post in posts]
+        print(post_titles)
+        postNamesStr = get_multiple_posts(post_titles, 10)
+        print(postNamesStr)
+        return {'postNames': postNamesStr}
+    
+#Gathers a chosen subreddit's most recent posts
+@app.route("/subredditPosts", methods=['POST'])
+def getSubredditPosts():
+    data= request.get_json()
+    sr = data['subreddit']
+    subreddit = reddit.subreddit(sr)
+    posts = subreddit.hot(limit=10)
+    try: #If no posts exist, return 'no posts found'
+        item2 = next(posts)
+    except:
+        return {'postNames': 'No posts found.'}
+    else:
+        post_titles = [post.title for post in posts]
+        print(post_titles)
+        postNamesStr = get_multiple_posts(post_titles, 10)
+        print(postNamesStr)
+        return {'postNames': postNamesStr}
 
 
 
