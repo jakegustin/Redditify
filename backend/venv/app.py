@@ -55,6 +55,7 @@ def login():
     auth_url = sp_oauth.get_authorize_url()
     return redirect(auth_url)
 
+#default spotify callback path - confirming if token exists
 @app.route("/callback")
 def callback():
     global access_token, sp
@@ -71,7 +72,7 @@ def callback():
     playlists = sp.current_user_playlists()
     return playlists
 
-
+#Gathers a user's spotify playlists
 @app.route("/getPlaylists")
 @cross_origin()
 def getPlaylists():
@@ -85,6 +86,7 @@ def getPlaylists():
     print(playlist_names_str)
     return {'error': '', 'playlistNames': playlist_names_str}
 
+#Gathers the top posts in reddit of all time
 @app.route("/topposts")
 def topposts(): #displays top 10 posts in r/all
     posts = reddit.subreddit("all").top(limit=10)
@@ -94,14 +96,14 @@ def topposts(): #displays top 10 posts in r/all
     print(postNamesStr)
     return {'postNames': postNamesStr}
 
-
+#Gathers a chosen user's most recent posts
 @app.route("/userPosts", methods=['POST'])
 def getPosts():
     data= request.get_json()
     user = data['username']
     reddituser = reddit.redditor(user)
     posts = reddituser.submissions.new(limit=10)
-    try:
+    try: #If no posts exist, return 'no posts found'
         item1 = next(posts)
     except:
         return {'postNames': 'No posts found.'}
@@ -112,13 +114,14 @@ def getPosts():
         print(postNamesStr)
         return {'postNames': postNamesStr}
     
+#Gathers a chosen subreddit's most recent posts
 @app.route("/subredditPosts", methods=['POST'])
 def getSubredditPosts():
     data= request.get_json()
     sr = data['subreddit']
     subreddit = reddit.subreddit(sr)
     posts = subreddit.hot(limit=10)
-    try:
+    try: #If no posts exist, return 'no posts found'
         item2 = next(posts)
     except:
         return {'postNames': 'No posts found.'}

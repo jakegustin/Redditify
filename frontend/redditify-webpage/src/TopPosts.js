@@ -2,6 +2,8 @@ import React, {useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import './Default.css';
 
+//TopPosts.js: Returns a list of the top posts on Reddit
+
 function TopPosts() {
     //declaring variable / initialization function for top posts
     var [topposts, setTopPosts] = useState('');

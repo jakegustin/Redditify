@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import './Default.css';
 import { mySub } from "./Subreddit.js";
 
+//SubredditTest.js: Displays the hottest posts from a given subreddit
+
 function SubredditTest() {
     //using useState to declare and assign setPosts
     //represents the posts received from the backend

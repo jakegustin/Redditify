@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import './Default.css';
 import { myName } from "./App.js";
 
+//SpotifyPlaylists.js: Returns the user's Spotify playlists
+
 function SpotifyPlaylists() {
     //using useState to declare and assign setPosts
     //represents the posts received from the backend

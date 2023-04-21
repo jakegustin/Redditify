@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './App.css';
 
+//RegisterForm.js: Webpage allowing the user to register on the website
+
 //Declaring custom username - would use useState, but it errors
 //so imma let it live here for now
 //export let username = '';

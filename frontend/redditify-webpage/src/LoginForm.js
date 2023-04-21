@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './App.css';
 
+//LoginForm.js: Webpage that allows for local user login
+
 //Declaring custom username - would use useState, but it errors
 //so imma let it live here for now
 //export let username = '';

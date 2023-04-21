@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import redditlogo from './redditlogo.png'
 import './App.css';
 
+//App.js: The homepage of the website, allowing for username search
+
 //Declaring custom username - would use useState, but it errors
 //so imma let it live here for now
 export let myName = 'Anonymous';

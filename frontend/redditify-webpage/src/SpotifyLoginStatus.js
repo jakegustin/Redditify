@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './App.css';
 
+//SpotifyLoginStatus.js: Returns whether user authenticated with Spotify successfully
+
 function SpotifyLoginStatus() {
   const location = useLocation();
   const errorMessage = new URLSearchParams(location.search).get('errorcode');

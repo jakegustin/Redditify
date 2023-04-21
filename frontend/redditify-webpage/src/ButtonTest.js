@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import './Default.css';
 import { myName } from "./App.js";
 
+//ButtonTest.js: Webpage to display the user's posts
+
 function ButtonTest() {
     //using useState to declare and assign setPosts
     //represents the posts received from the backend

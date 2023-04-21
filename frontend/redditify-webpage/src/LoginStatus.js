@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './App.css';
 
+//LoginStatus.js: Returns the user's local login status
+
 //Declaring custom username - would use useState, but it errors
 //so imma let it live here for now
 //export let username = '';
