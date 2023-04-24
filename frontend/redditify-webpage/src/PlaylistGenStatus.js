@@ -19,7 +19,7 @@ function LoginStatus() {
         {/*buttons to navigate to other pages */}
         <Link to="/">
           <button onClick={e => {
-          }} className='App-username-submit'>Go Home</button>
+          }} className='App-buttons'>Go Home</button>
         </Link>
       </header>
     </div>

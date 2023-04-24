@@ -49,6 +49,7 @@ function LoginForm() {
           </input>
         </div>
         {/*Display error message if needed */}
+        <div className='App-buttons'>
         {inputError && <p>Invalid Input: {errorReason}</p>}
         {/*buttons to navigate to other pages */}
           <button onClick={e => {checkInput()
@@ -61,6 +62,7 @@ function LoginForm() {
           <button onClick={e => {
           }} className='App-username-submit'>Go Home</button>
         </Link>
+        </div>
       </header>
     </div>
   );

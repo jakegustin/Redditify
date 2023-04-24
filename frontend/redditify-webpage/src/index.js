@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ButtonTest from './ButtonTest';
 import SpotifyLogin from './Login';
-import TopPosts from './TopPosts';
+import TopPosts from './DailyPlaylistGen';
 import Subreddit from './Subreddit';
 import SubredditTest from './SubredditTest';
 import RegisterForm from './RegisterForm';
@@ -16,6 +16,7 @@ import SpotifyLoginStatus from './SpotifyLoginStatus';
 import SpotifyPlaylists from './SpotifyPlaylists';
 import UserSpotifyPlaylistGen from './UserPlaylistGenerator';
 import SubSpotifyPlaylistGen from './SubPlaylistGenerator';
+import FindSubreddits from './FindNewSubreddits';
 
 //Index.js: The root of the React app, which renders the App component
 
@@ -37,6 +38,7 @@ export default function Root() {
       <Route path="/spotifyPlaylists" element={<SpotifyPlaylists />} />
       <Route path="/createUserPlaylist" element={<UserSpotifyPlaylistGen />} />
       <Route path="/createSubredditPlaylist" element={<SubSpotifyPlaylistGen />} />
+      <Route path="/findSubreddit" element={<FindSubreddits />} />
       <Route path="*" element={<h1>404: Not Found</h1>} />
     </Routes>
   </BrowserRouter>

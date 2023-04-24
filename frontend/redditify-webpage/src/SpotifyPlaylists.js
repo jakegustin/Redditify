@@ -50,11 +50,13 @@ function SpotifyPlaylists() {
                </div>
             }
             {/*Button to return to home page*/}
+            <div className="Default-buttons">
             <Link to="/">
-                <button type="button">
+                <button classname='Default-buttons' type="button">
                     Return to Home
                 </button>
             </Link>
+            </div>
         </div>
     );
 }

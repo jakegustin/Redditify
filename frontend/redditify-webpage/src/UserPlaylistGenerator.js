@@ -60,11 +60,13 @@ function UserSpotifyPlaylistGen() {
              </div>
           }
           {/*Button to return to home page*/}
+          <div className='App-buttons'>
           <Link to="/">
-              <button type="button">
+              <button className='App-buttons' type="button">
                   Return to Home
               </button>
           </Link>
+          </div>
       </div>
   );
 }

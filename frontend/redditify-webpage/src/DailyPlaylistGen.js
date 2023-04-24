@@ -11,7 +11,7 @@ import { mySub } from "./Subreddit.js";;
 //export let username = '';
 //export let password = '';
 
-function SubSpotifyPlaylistGen() {
+function TopPosts() {
   //using useState to declare and assign setPosts
   //represents the posts received from the backend
   var [playlists, setPlaylists] = useState('');
@@ -21,13 +21,12 @@ function SubSpotifyPlaylistGen() {
 
   const debouncedFetch = debounce((searchTerm) => {
     setLoading(true);
-    fetch('http://localhost:5000/createSubSpotifyPlaylist', { 
-      method: 'POST',
+    fetch('http://localhost:5000/topposts', { 
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
       },
-      body: JSON.stringify({ 'username': searchTerm })
     })
       .then(response => response.json())
       .then(data => {
@@ -60,13 +59,15 @@ function SubSpotifyPlaylistGen() {
              </div>
           }
           {/*Button to return to home page*/}
+          <div className='App-buttons'>
           <Link to="/">
               <button className='App-buttons' type="button">
                   Return to Home
               </button>
           </Link>
+          </div>
       </div>
   );
 }
 
-export default SubSpotifyPlaylistGen;
+export default TopPosts;

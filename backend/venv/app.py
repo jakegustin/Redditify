@@ -4,6 +4,7 @@ from collections import Counter
 from nltk.corpus import stopwords
 import nltk
 import praw, spotipy, requests, json, sys, os
+from datetime import date
 from spotipy.oauth2 import SpotifyOAuth
 
 "///////////////////INITIALIZATION///////////////////"
@@ -18,9 +19,13 @@ access_token = ""
 # stores Spotipy instance
 global sp
 sp = None
+# stores local depth of search
+global depth
+depth = 10
 
 "///////////////////HELPER FUNCTIONS///////////////////"
 
+#delays execution of other functions until stopwords are loaded
 def load_stopwords(num_retries=3):
     try:
         stop_words = set(stopwords.words('english'))
@@ -76,7 +81,7 @@ sp_oauth = SpotifyOAuth(
     client_id="d8c48211c35f430fb4a4a72bd65b0d9d",
     client_secret="4c4b92dbfca14f0ca001befd65e1d288",
     redirect_uri="http://127.0.0.1:5000/callback",
-    scope="playlist-modify-private playlist-modify-public playlist-read-private user-library-read"
+    scope="playlist-modify-private playlist-modify-public playlist-read-private user-library-read user-read-recently-played user-top-read"
 )
 
 #reddit stuff
@@ -86,7 +91,7 @@ reddit = praw.Reddit(
     user_agent="flask:OywDN09vVyHZAq2TYkyQkw:v1.0 (by u/Friendly_Insurance60)"
 )
 
-"///////////////////API REQUEST ENDPOINTS///////////////////"
+"///////////////////SPOTIFY OAUTH ENDPOINTS///////////////////"
 
 #root URL
 @app.route("/")
@@ -113,6 +118,15 @@ def callback():
     sp = spotipy.Spotify(auth=access_token)
     return redirect("http://localhost:3000/spotifyLoginStatus?status=success")
 
+@app.route("/checkLogin")
+def verifyLogin():
+    global access_token
+    if access_token == "":
+        return {'error': 'No access token.', 'status': False}
+    return {'error': '', 'status': True}
+
+"///////////////////GENERIC ENDPOINTS///////////////////"
+
 #Gathers a user's spotify playlists
 @app.route("/getPlaylists")
 @cross_origin()
@@ -124,9 +138,10 @@ def getPlaylists():
     playlists = sp.current_user_playlists()
     playlist_names = [playlist['name'] for playlist in playlists['items']]
     playlist_names_str = get_multiple_posts(playlist_names, 10)
-    print(playlist_names_str)
     return {'error': '', 'playlistNames': playlist_names_str}
 
+"""
+DEPRECATED
 #Gathers the top posts in reddit of all time
 @app.route("/topposts")
 def topposts(): #displays top 10 posts in r/all
@@ -134,41 +149,47 @@ def topposts(): #displays top 10 posts in r/all
     post_titles = [post.title for post in posts]
     postNamesStr = get_multiple_posts(post_titles, 10)
     return {'postNames': postNamesStr}
+"""
+
+"///////////////////REDDIT USER ENDPOINTS///////////////////"
 
 #Gathers a chosen user's most recent posts
 @app.route("/userPosts", methods=['POST'])
 def getPosts():
+    global depth
     data= request.get_json()
     user = data['username']
+    depth = int(data['depth'])
     reddituser = reddit.redditor(user)
-    posts = reddituser.submissions.new(limit=50)
+    posts = reddituser.submissions.new(limit=depth+1)
     try: #If no posts exist, return 'no posts found'
         item1 = next(posts)
     except:
         return {'postNames': 'No posts found.'}
     else:
         post_titles = [post.title for post in posts]
-        print(get_top_keywords(post_titles, 5))
-        postNamesStr = get_multiple_posts(post_titles, 10)
+        print(get_top_keywords(post_titles, depth))
+        postNamesStr = get_multiple_posts(post_titles, depth)
         return {'postNames': postNamesStr}
-    
+
+#Generates a Spotify playlist based on a user's reddit posts    
 @app.route("/createUserSpotifyPlaylist", methods=['POST'])
 def createUserPlaylist():
-    global access_token, sp
+    global access_token, sp, depth
     if access_token == "":
         return {'error': 'No access token.', 'playlistNames': '(Not applicable)'}
     sp = spotipy.Spotify(auth=access_token)
     data= request.get_json()
     inputname = data['username']
     reddituser = reddit.redditor(inputname)
-    posts = reddituser.submissions.new(limit=50)
+    posts = reddituser.submissions.new(limit=depth)
     try: #If no posts exist, return 'no posts found'
         item1 = next(posts)
     except:
         return {'error': 'No posts found.'}
     else:
         post_titles = [post.title for post in posts]
-        tops = get_top_keywords(post_titles, 5)
+        tops = get_top_keywords(post_titles, depth)
         spotifyUserInfo = sp.me()
         spotifyUserID = spotifyUserInfo['id']
         playlistinfo = sp.user_playlist_create(spotifyUserID, 'u/' + inputname, public=False)
@@ -178,23 +199,45 @@ def createUserPlaylist():
             for idx, track in enumerate(results['tracks']['items']):
                 sp.user_playlist_add_tracks(spotifyUserID, playlistID, [track['id']])
         return {'status': 'Success'}
-    
+
+"///////////////////SUBREDDIT ENDPOINTS///////////////////"
+
+#Gathers a chosen subreddit's most recent posts
+@app.route("/subredditPosts", methods=['POST'])
+def getSubredditPosts():
+    global depth
+    data= request.get_json()
+    sr = data['subreddit']
+    depth = int(data['depth'])
+    print(sr, depth)
+    subreddit = reddit.subreddit(sr)
+    posts = subreddit.hot(limit=depth+1)
+    try: #If no posts exist, return 'no posts found'
+        item2 = next(posts)
+    except:
+        return {'postNames': 'No posts found.'}
+    else:
+        post_titles = [post.title for post in posts]
+        postNamesStr = get_multiple_posts(post_titles, depth)
+        return {'postNames': postNamesStr}
+
+# Generates a Spotify playlist based on a subreddit's top posts
 @app.route("/createSubSpotifyPlaylist", methods=['POST'])
 def createSubPlaylist():
-    global access_token, sp
+    global access_token, sp, depth
     if access_token == "":
         return {'error': 'No access token.', 'playlistNames': '(Not applicable)'}
     sp = spotipy.Spotify(auth=access_token)
     data= request.get_json()
     inputname = data['username']
-    posts = reddit.subreddit(inputname).hot(limit=50)
+    posts = reddit.subreddit(inputname).hot(limit=depth)
     try: #If no posts exist, return 'no posts found'
         item1 = next(posts)
     except:
         return {'error': 'No posts found.'}
     else:
         post_titles = [post.title for post in posts]
-        tops = get_top_keywords(post_titles, 5)
+        tops = get_top_keywords(post_titles, depth)
         spotifyUserInfo = sp.me()
         spotifyUserID = spotifyUserInfo['id']
         playlistinfo = sp.user_playlist_create(spotifyUserID, 'r/' + inputname, public=False)
@@ -205,23 +248,57 @@ def createSubPlaylist():
                 sp.user_playlist_add_tracks(spotifyUserID, playlistID, [track['id']])
         return {'status': 'Success'}
     
-#Gathers a chosen subreddit's most recent posts
-@app.route("/subredditPosts", methods=['POST'])
-def getSubredditPosts():
-    data= request.get_json()
-    sr = data['subreddit']
-    subreddit = reddit.subreddit(sr)
-    posts = subreddit.hot(limit=50)
+# Generates a Spotify playlist based on a subreddit's top posts
+@app.route("/topposts", methods=['GET'])
+def createTopPostPlaylist():
+    global access_token, sp
+    if access_token == "":
+        return {'error': 'No access token.', 'playlistNames': '(Not applicable)'}
+    sp = spotipy.Spotify(auth=access_token)
+    posts = reddit.subreddit('all').hot(limit=25)
     try: #If no posts exist, return 'no posts found'
-        item2 = next(posts)
+        item1 = next(posts)
     except:
-        return {'postNames': 'No posts found.'}
+        return {'error': 'No posts found.'}
     else:
         post_titles = [post.title for post in posts]
-        postNamesStr = get_multiple_posts(post_titles, 10)
-        return {'postNames': postNamesStr}
+        tops = get_top_keywords(post_titles, 25)
+        spotifyUserInfo = sp.me()
+        spotifyUserID = spotifyUserInfo['id']
+        currentDate = date.today().isoformat()
+        playlistinfo = sp.user_playlist_create(spotifyUserID, 'Redditify ' + currentDate, public=False)
+        playlistID = playlistinfo['id']
+        for key in tops:
+            results = sp.search(q=key, limit=1)
+            for idx, track in enumerate(results['tracks']['items']):
+                sp.user_playlist_add_tracks(spotifyUserID, playlistID, [track['id']])
+        return {'status': 'Success'}
+    
+# Generates a list of relevant subreddits based on recent listening history
+@app.route("/getSubredditFromListeningHistory", methods=['GET'])
+def findSubreddit():
+    global access_token, sp
+    if access_token == "":
+        return {'error': 'No access token.', 'postNames': '(Not applicable)'}
+    sp = spotipy.Spotify(auth=access_token)
+    spotifyHistory = sp.current_user_recently_played(limit=5)
+    track_titles = []
+    for i in range(5):
+        track_titles.append(spotifyHistory['items'][i]['track']['name'])
+    print(track_titles)
+    bestSubs = []
+    for track in track_titles:
+        try:
+            sub = reddit.subreddits.search_by_name(track)[0].display_name
+            print(sub)
+        except:
+            continue
+        if sub not in bestSubs:
+            bestSubs.append("r/"+sub)
+    return {'postNames': get_multiple_posts(bestSubs, len(bestSubs)+1)}
 
 
+"///////////////////INITIALIZATION///////////////////"
 
 # this needs to be at the end of the file to run the app
 if __name__ == '__main__':

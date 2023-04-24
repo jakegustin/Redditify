@@ -75,6 +75,7 @@ function RegisterForm() {
         {/*Display error message if needed */}
         {inputError && <p>Invalid input: {errorReason}.</p>}
         {/*buttons to navigate to other pages */}
+        <div className='App-buttons'>
           <button onClick={e => {checkInput()
           }} className='App-username-submit'>Register</button>
         <Link to="/loginform">
@@ -85,6 +86,7 @@ function RegisterForm() {
           <button onClick={e => {
           }} className='App-username-submit'>Go Home</button>
         </Link>
+        </div>
       </header>
     </div>
   );

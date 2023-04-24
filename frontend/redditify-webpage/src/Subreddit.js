@@ -8,8 +8,36 @@ import './App.css';
 //Declaring custom username - would use useState, but it errors
 //so imma let it live here for now
 export let mySub = 'popular';
+export let myDepth = 10;
 
 function Subreddit() {
+  var [loggedIn, setLoggedIn] = useState(false);
+  var [loading, setLoading] = useState(true);
+  var [show, setShow] = useState(false);
+  
+  useEffect(() => {
+    fetch('http://localhost:5000/checkLogin', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+  })
+    .then(response => response.json())
+    .then(data => {
+      setLoggedIn(data['status']);
+      setLoading(false);
+      })
+  .catch(error => {
+      console.log(error)
+      setLoading(false);
+      })
+    const timeoutId = setTimeout(() => {
+      setShow(true);
+    }, 200);
+    return () => clearTimeout(timeoutId);
+  }, [])
+
   //reinitializing username in case we end up back here.
   mySub = 'popular'
   return (
@@ -20,7 +48,7 @@ function Subreddit() {
         <img src={redditlogo} className="App-logo" alt="logo" />
         {/*input prompt and box */}
         <p>
-          Enter Subreddit:
+          Enter Subreddit Name:
         </p>
         <div className="App-input-container">
           <label for="usernameInput">r/</label>
@@ -33,32 +61,56 @@ function Subreddit() {
           }}
           className='App-username-input' type="text" id="usernameInput" name="username">
           </input>
+          <label for="depthInput">Depth:</label>
+          <input onChange={myInput => {
+            if (myInput.target.value !== '') {
+              myDepth = myInput.target.value;
+            } else {
+              myDepth = 10;
+            }
+          }}
+          className='App-depth-input' type="number" min="1" id="depthInput" name="depth">
+          </input>
         </div>
+        <div className='App-buttons-container'>
         {/*buttons to navigate to other pages */}
+        {loading ? null :
+        <div className={`App-buttons ${show ? "loaded" : "loading"}`}> 
         <Link to="/subredditPosts">
           <button onClick={e => {
-          }} className='App-username-submit'>Submit</button>
+          }} >Submit</button>
         </Link>
-        <Link to="/loginPage">
+        {loggedIn ?
+        <div className='App-buttons'>
+          <Link to="/spotifyPlaylists">
           <button onClick={e => {
-          }} className='App-username-submit'>Login to Spotify</button>
-        </Link>
-        <Link to="/spotifyPlaylists">
+          }} >See Spotify Playlists</button>
+          </Link> 
+          <Link to="/topPosts">
+            <button onClick={e => {
+            }} >Generate Playlist of the Day</button>
+          </Link>
+          <Link to="/findSubreddit">
+            <button onClick={e => {
+            }} >Find Your Next Subreddit</button>
+          </Link>
+          </div>:           
+          <Link to="/spotifyLogin">
           <button onClick={e => {
-          }} className='App-username-submit'>See Spotify Playlists</button>
-        </Link>  
-        <Link to="/topPosts">
-          <button onClick={e => {
-          }} className='App-username-submit'>See Reddit Top Posts</button>
-        </Link>
+          }} >Login to Spotify</button>
+          </Link>
+          }
         <Link to="/">
           <button onClick={e => {
-          }} className='App-username-submit'>Switch to Username Search</button>
+          }} >Switch to Username Search</button>
         </Link>
         <Link to="/loginForm">
           <button onClick={e => {
-          }} className='App-username-submit'>Login / Register</button>
+          }} >Login / Register</button>
         </Link>
+        </div>
+        }
+        </div>
       </header>
     </div>
   );
