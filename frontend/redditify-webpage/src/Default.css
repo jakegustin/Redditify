@@ -36,4 +36,17 @@
     width: 300px;
     text-decoration: none;
     margin-bottom: 10px;
+    transition: all 0.3s ease-in-out;
+    border-radius: 3%;
+    background-color: #D00;
+    color: #FFF;
+  }
+
+  .Default-topic-buttons:hover {
+    transform: scale(1.1);
+    border-radius: 3%;
+  }
+
+  .Default-topic-buttons:clicked {
+    animation: button-anim 0.3s;
   }

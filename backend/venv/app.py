@@ -200,6 +200,36 @@ def createUserPlaylist():
                 sp.user_playlist_add_tracks(spotifyUserID, playlistID, [track['id']])
         return {'status': 'Success'}
     
+#Generates a Spotify playlist based on a user's reddit posts, excluding desired subreddits  
+@app.route("/createCustomUserSpotifyPlaylist", methods=['POST'])
+def createCustomUserPlaylist():
+    global access_token, sp, depth
+    if access_token == "":
+        return {'error': 'No access token.', 'playlistNames': '(Not applicable)'}
+    sp = spotipy.Spotify(auth=access_token)
+    data= request.get_json()
+    inputname = data['username']
+    excludedSubs = data['excludedSubs']
+    reddituser = reddit.redditor(inputname)
+    posts = [post for post in reddituser.submissions.new(limit=depth) if post.subreddit.display_name.lower() not in excludedSubs]
+    print(posts)
+    try: #If no posts exist, return 'no posts found'
+        item3 = posts[0]
+    except:
+        return {'error': 'No posts found.'}
+    else:
+        post_titles = [post.title for post in posts]
+        tops = get_top_keywords(post_titles, depth)
+        spotifyUserInfo = sp.me()
+        spotifyUserID = spotifyUserInfo['id']
+        playlistinfo = sp.user_playlist_create(spotifyUserID, 'u/' + inputname, public=False)
+        playlistID = playlistinfo['id']
+        for key in tops:
+            results = sp.search(q=key, limit=1)
+            for idx, track in enumerate(results['tracks']['items']):
+                sp.user_playlist_add_tracks(spotifyUserID, playlistID, [track['id']])
+        return {'status': 'Success'}
+    
 @app.route("/getUserActiveSubreddits", methods=['POST'])
 def getActiveSubs():
     data = request.get_json()
