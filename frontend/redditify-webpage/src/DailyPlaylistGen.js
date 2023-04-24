@@ -49,10 +49,8 @@ function TopPosts() {
   return(
       <div className="Default">
           {/*Basic titles and then a preformatted list should appear unless it errors*/}
-          {console.log(playlists)}
           <h1>Redditify</h1>
           <h2>Spotify Playlist Generation</h2>
-          {console.log(errorMessage)}
           {(errorMessage !== '') ? <p>Error: {errorMessage}. Please try logging in again.</p>
            : <div className='PostNames'> 
               {loading ? 'Loading...' : <div dangerouslySetInnerHTML={{__html: playlists}} /> }

@@ -37,7 +37,6 @@ function SubredditTest() {
             {/*Basic titles and then a preformatted list should appear*/}
             <h1>Welcome to r/{mySub}!</h1>
             <h2>Here are some of the hottest posts:</h2>
-            {console.log(posts)}
             <div className='PostNames'>
                 {loading ? 'Loading...' : <div dangerouslySetInnerHTML={{__html: posts}} /> }
             </div>
