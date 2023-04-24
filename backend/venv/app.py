@@ -199,6 +199,21 @@ def createUserPlaylist():
             for idx, track in enumerate(results['tracks']['items']):
                 sp.user_playlist_add_tracks(spotifyUserID, playlistID, [track['id']])
         return {'status': 'Success'}
+    
+@app.route("/getUserActiveSubreddits", methods=['POST'])
+def getActiveSubs():
+    data = request.get_json()
+    user = data['username']
+    reddituser = reddit.redditor(user)
+    recentPosts = reddituser.submissions.new(limit=3)
+    prominentSubs = []
+    for post in recentPosts:
+        print(post)
+        if post.subreddit.display_name_prefixed not in prominentSubs:
+            prominentSubs.append(post.subreddit.display_name_prefixed)
+    print(prominentSubs)
+    return {'subreddits': prominentSubs}
+
 
 "///////////////////SUBREDDIT ENDPOINTS///////////////////"
 

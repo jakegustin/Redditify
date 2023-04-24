@@ -17,6 +17,7 @@ import SpotifyPlaylists from './SpotifyPlaylists';
 import UserSpotifyPlaylistGen from './UserPlaylistGenerator';
 import SubSpotifyPlaylistGen from './SubPlaylistGenerator';
 import FindSubreddits from './FindNewSubreddits';
+import ModifyPlaylistGen from './ModifyPlaylistGen';
 
 //Index.js: The root of the React app, which renders the App component
 
@@ -39,6 +40,7 @@ export default function Root() {
       <Route path="/createUserPlaylist" element={<UserSpotifyPlaylistGen />} />
       <Route path="/createSubredditPlaylist" element={<SubSpotifyPlaylistGen />} />
       <Route path="/findSubreddit" element={<FindSubreddits />} />
+      <Route path="/modifySpotifyGeneration" element={<ModifyPlaylistGen />} />
       <Route path="*" element={<h1>404: Not Found</h1>} />
     </Routes>
   </BrowserRouter>

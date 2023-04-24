@@ -48,6 +48,11 @@ function ButtonTest() {
                     Create Spotify Playlist
                 </button>
             </Link>
+            <Link to="/modifySpotifyGeneration">
+                <button type="button">
+                    Modify Playlist Generation
+                </button>
+            </Link>
             <Link to="/">
                 <button type="button">
                     Return to Home
