@@ -9,7 +9,6 @@ import { myFinalExclusions } from './ModifyPlaylistGen';
 
 function UserCustomSpotifyPlaylistGen() {
 
-  console.log(myFinalExclusions)
   //using useState to declare and assign setPosts
   //represents the posts received from the backend
   var [playlists, setPlaylists] = useState('');
@@ -17,7 +16,6 @@ function UserCustomSpotifyPlaylistGen() {
   var [errorMessage, setErrorMessage] = useState('');
   var [searchTerm, setSearchTerm] = useState(myName);
 
-  console.log(myName)
   const debouncedFetch = debounce((searchTerm) => {
     setLoading(true);
     //execute fetch request
@@ -50,10 +48,8 @@ function UserCustomSpotifyPlaylistGen() {
   return(
       <div className="Default">
           {/*Basic titles and then a preformatted list should appear unless it errors*/}
-          {console.log(playlists)}
           <h1>Redditify</h1>
           <h2>Spotify Playlist Generation</h2>
-          {console.log(errorMessage)}
           {(errorMessage !== '') ? <p>Error: {errorMessage}. Please try logging in again.</p>
            : <div className='PostNames'> 
               {loading ? 'Loading...' : <div dangerouslySetInnerHTML={{__html: playlists}} /> }
