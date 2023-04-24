@@ -1,13 +1,69 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './App.css';
+import { initializeApp} from "firebase/app";
+import {getAuth, createUserWithEmailAndPassword} from "firebase/auth"
+import {getDatabase, ref, set} from "firebase/database"
+import bcrypt from 'bcryptjs';
 
 //RegisterForm.js: Webpage allowing the user to register on the website
 
-//Declaring custom username - would use useState, but it errors
-//so imma let it live here for now
-//export let username = '';
-//export let password = '';
+export let regStatus = false;
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDNZdWFNxr7TTHfw7LbvPQfifIT1mha3Dg",
+  authDomain: "redditify-db.firebaseapp.com",
+  projectId: "redditify-db",
+  storageBucket: "redditify-db.appspot.com",
+  messagingSenderId: "840263488875",
+  appId: "1:840263488875:web:144020c948f361acb2282e",
+  databaseURL: "https://redditify-db-default-rtdb.firebaseio.com/"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase();
+const auth = getAuth();
+
+async function newAuth() {
+  let username = document.getElementById('usernameInput').value;
+  let password = document.getElementById('passwordInput').value;
+  let hashedPassword = await hashPassword(password);
+  let redditName = document.getElementById('redditNameInput').value;
+  await createUserWithEmailAndPassword(auth, username, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    const uid = user.uid;
+    writeUserData(uid, username, redditName);
+    regStatus = true;
+    return true;
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    regStatus = false;
+    return false;
+    // ..
+  });
+  return regStatus;
+}
+
+async function writeUserData(userId, name, redditName) {
+  set(ref(db, 'users/' + userId), {
+    username: name,
+    redditName: redditName
+  });
+}
+
+async function hashPassword(password) {
+  const saltRounds = 10;
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hash = await bcrypt.hash(password, salt);
+  return hash;
+}
 
 function RegisterForm() {
   //reinitializing username in case we end up back here.
@@ -20,17 +76,26 @@ function RegisterForm() {
   var [errorReason, setErrorReason] = useState('');
 
   {/* Checks if input is non-empty and passwords match, redirects if all good */}
-  function checkInput() {
+  async function checkInput() {
     if (username === '' || password === '' || redditName === '' || confirmPassword === '') {
       setInputError(true);
       setErrorReason('Empty fields');
     } else if (password !== confirmPassword) {
       setInputError(true);
       setErrorReason('Passwords do not match');
+    } else if (password.length < 6) {
+      setInputError(true);
+      setErrorReason('Password must be at least 6 characters');
     } else {
-      window.location.href = '/loginStatus';
+      let regStatus = await newAuth()
+      if (regStatus === true) {
+        alert('Registration successful! Please log in.');
+      } else {
+        setInputError(true);
+        setErrorReason('Invalid username or password');
     }
   }
+}
   return (
     <div className="App">
       <header className="App-header">
@@ -65,7 +130,7 @@ function RegisterForm() {
           <label for="redditNameInput">Reddit Username:</label>
         </div>
         <div className="Login-input-redditName-container">
-          <label for="redditNameInput">r/</label>
+          <label for="redditNameInput">u/</label>
           <input onChange={myInput => {
               setRedditName(myInput.target.value);
           }}

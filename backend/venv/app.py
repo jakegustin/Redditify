@@ -22,6 +22,9 @@ sp = None
 # stores local depth of search
 global depth
 depth = 10
+# stores logged in reddit username
+global reddit_username
+reddit_username = ""
 
 "///////////////////HELPER FUNCTIONS///////////////////"
 
@@ -125,6 +128,21 @@ def verifyLogin():
         return {'error': 'No access token.', 'status': False}
     return {'error': '', 'status': True}
 
+@app.route("/saveRedditLogin", methods=['POST'])
+def saveRedditLogin():
+    global reddit_username
+    data = request.get_json()
+    reddit_username = data['username']
+    return {'error': '', 'status': True} 
+
+@app.route("/checkRedditLogin")
+def verifyRedditLogin():
+    global reddit_username
+    if reddit_username == "":
+        return {'error': 'No reddit username. Try logging in again', 'redditName': '', 'status': False}
+    return {'error': '', 'redditName': reddit_username, 'status': True}
+
+
 "///////////////////GENERIC ENDPOINTS///////////////////"
 
 #Gathers a user's spotify playlists
@@ -180,7 +198,14 @@ def createUserPlaylist():
         return {'error': 'No access token.', 'playlistNames': '(Not applicable)'}
     sp = spotipy.Spotify(auth=access_token)
     data= request.get_json()
+    try:
+        isAuto = int(data['auto'])
+        if isAuto:
+            depth = 10
+    except:
+        depth = depth
     inputname = data['username']
+    print(inputname)
     reddituser = reddit.redditor(inputname)
     posts = reddituser.submissions.new(limit=depth)
     try: #If no posts exist, return 'no posts found'

@@ -20,7 +20,7 @@ function LoginStatus() {
     <div className="App">
       <header className="App-header">
         <p>
-          NEED CODE HERE
+          Successfully Logged In!
         </p>
         {/*buttons to navigate to other pages */}
         <Link to="/">

@@ -11,7 +11,8 @@ export let mySub = 'popular';
 export let myDepth = 10;
 
 function Subreddit() {
-  var [loggedIn, setLoggedIn] = useState(false);
+  var [spLoggedIn, setspLoggedIn] = useState(false);
+  var [redditLoggedIn, setRedditLoggedIn] = useState(false);
   var [loading, setLoading] = useState(true);
   var [show, setShow] = useState(false);
   
@@ -25,7 +26,24 @@ function Subreddit() {
   })
     .then(response => response.json())
     .then(data => {
-      setLoggedIn(data['status']);
+      setspLoggedIn(data['status']);
+      setLoading(false);
+      })
+  .catch(error => {
+      console.log(error)
+      setLoading(false);
+      })
+      
+    fetch('http://localhost:5000/checkRedditLogin', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+  })
+    .then(response => response.json())
+    .then(data => {
+      setRedditLoggedIn(data['status']);
       setLoading(false);
       })
   .catch(error => {
@@ -80,7 +98,12 @@ function Subreddit() {
           <button onClick={e => {
           }} >Submit</button>
         </Link>
-        {loggedIn ?
+        {redditLoggedIn  && spLoggedIn ? 
+        <Link to="/loggedInPlaylist">
+          <button onClick={e => {
+          }} >Generate Your Playlist</button>
+        </Link> : null}
+        {spLoggedIn ?
         <div className='App-buttons'>
           <Link to="/spotifyPlaylists">
           <button onClick={e => {
