@@ -46,7 +46,7 @@ function LoggedInSpotifyPlaylistGen() {
       });
   }, 500);
 
-  async function generatePlaylist() {
+  function generatePlaylist() {
     if (redditName === '') {
       return false;
     }
@@ -75,7 +75,8 @@ function LoggedInSpotifyPlaylistGen() {
   }
   useEffect(() => {
     debouncedFetch(searchTerm);
-  }, [searchTerm]);
+    console.log("THISIS" + redditName)
+  }, [searchTerm, redditName]);
 
   return(
       <div className="Default">

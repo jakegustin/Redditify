@@ -133,13 +133,17 @@ def saveRedditLogin():
     global reddit_username
     data = request.get_json()
     reddit_username = data['username']
+    print("SAVING" + reddit_username)
     return {'error': '', 'status': True} 
 
 @app.route("/checkRedditLogin")
 def verifyRedditLogin():
     global reddit_username
+    print("HEY" + reddit_username)
     if reddit_username == "":
+        print("OK")
         return {'error': 'No reddit username. Try logging in again', 'redditName': '', 'status': False}
+    print("BETTEROK")
     return {'error': '', 'redditName': reddit_username, 'status': True}
 
 
