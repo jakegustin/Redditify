@@ -1,3 +1,4 @@
 backend/venv/__pycache__/
-backend/venv/Lib
+backend/venv/Lib/site-packages/
+backend/venv/Lib/site-packages/__pycache__
 node_modules/
