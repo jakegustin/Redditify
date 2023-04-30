@@ -103,7 +103,7 @@ function RegisterForm() {
         <h1>Redditify Registration</h1>
         {/*input prompts and boxes */}
         <div className="Login-input-container">
-          <label for="usernameInput">Username:</label>
+          <label for="usernameInput">Email:</label>
           <input onChange={myInput => {
               setUsername(myInput.target.value);
           }}
