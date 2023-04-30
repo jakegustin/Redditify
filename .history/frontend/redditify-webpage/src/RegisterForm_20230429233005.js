@@ -29,14 +29,11 @@ function RegisterForm() {
       setErrorReason('Passwords do not match');
     } else {
       // send username, password, reddit name to backend database via fetch
-      fetch('http://localhost:5000/register', {
+      fetch('http://localhost:3000/register', {
 
         method: 'POST',
-        headers: {
-          'Content-Type': 'text/plain'
-        },
         mode: 'cors',
-        body: [username, password, redditName].join('%')
+        body: [username, password, redditName].join('$')
       })
       window.location.href = '/loginStatus';
     }

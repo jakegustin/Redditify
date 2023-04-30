@@ -142,13 +142,11 @@ def getSubredditPosts():
 
 @app.route("/register", methods=['POST'])
 def register():
-    data = request.data.decode('utf-8')
-    info_list = data.split('%')
+    data = request.data
+    info_list = data.split('$')
     db = connect_db()
-    db.execute('INSERT INTO userinfo (username, userpassword, redditname) VALUES (?, ?, ?)',
+    db.execute('INSERT INTO userinfo (username, userpassword, redditname) VALUES (?, ?)',
                          (info_list[0], info_list[1], info_list[2]))
-    db.commit()
-    db.close()
     return data
 
 # this needs to be at the end of the file to run the app

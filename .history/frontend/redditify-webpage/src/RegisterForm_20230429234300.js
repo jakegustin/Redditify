@@ -34,7 +34,7 @@ function RegisterForm() {
         method: 'POST',
         headers: {
           'Content-Type': 'text/plain'
-        },
+        }
         mode: 'cors',
         body: [username, password, redditName].join('%')
       })

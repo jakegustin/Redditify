@@ -2,7 +2,6 @@ from flask import Flask, jsonify, g, request, redirect, url_for
 from flask_cors import CORS, cross_origin
 import praw, spotipy, requests, json, sys, os
 from spotipy.oauth2 import SpotifyOAuth
-import sqlite3
 
 # intializes an instance of the flask app
 app = Flask(__name__) 
@@ -25,12 +24,6 @@ def get_multiple_posts(res, num):
     for i in range(num):
         post_names_str += "~ " + res[i] + "<br>"
     return post_names_str
-
-# method to get connection with the user info database
-def connect_db():
-    connection = sqlite3.connect('database.db')
-    connection.row_factory = sqlite3.Row
-    return connection
 
 #secret key to protect user session data in flask
 app.secret_key = os.environ.get("FLASK_SECRET_KEY")
@@ -140,15 +133,9 @@ def getSubredditPosts():
         return {'postNames': postNamesStr}
 
 
-@app.route("/register", methods=['POST'])
+@app.route("/register", method=['POST'])
 def register():
-    data = request.data.decode('utf-8')
-    info_list = data.split('%')
-    db = connect_db()
-    db.execute('INSERT INTO userinfo (username, userpassword, redditname) VALUES (?, ?, ?)',
-                         (info_list[0], info_list[1], info_list[2]))
-    db.commit()
-    db.close()
+    data = request.data
     return data
 
 # this needs to be at the end of the file to run the app
