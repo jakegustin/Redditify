@@ -20,6 +20,7 @@ function UserSpotifyPlaylistGen() {
   var [searchTerm, setSearchTerm] = useState(myName);
 
   const debouncedFetch = debounce((searchTerm) => {
+    //Using this awkward debounce mechanism so we don't generate duplicate playlists/requests
     setLoading(true);
     fetch('http://localhost:5000/createUserSpotifyPlaylist', { 
       method: 'POST',

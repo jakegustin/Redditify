@@ -5,7 +5,7 @@ import './App.css';
 
 //Subreddit.js: Alternate homepage, instead allowing for subreddit search
 
-//Declaring custom username - would use useState, but it errors
+//Declaring default values - would use useState, but it errors
 //so imma let it live here for now
 export let mySub = 'popular';
 export let myDepth = 10;

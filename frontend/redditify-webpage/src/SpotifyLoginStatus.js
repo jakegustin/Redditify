@@ -6,6 +6,7 @@ import './App.css';
 
 function SpotifyLoginStatus() {
   const location = useLocation();
+  //checking url to see if an error code exists
   const errorMessage = new URLSearchParams(location.search).get('errorcode');
   function checkSuccess() {
     if (errorMessage) {

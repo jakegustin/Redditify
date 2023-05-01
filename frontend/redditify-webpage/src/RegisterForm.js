@@ -4,10 +4,10 @@ import './App.css';
 import { initializeApp} from "firebase/app";
 import {getAuth, createUserWithEmailAndPassword} from "firebase/auth"
 import {getDatabase, ref, set} from "firebase/database"
-import bcrypt from 'bcryptjs';
 
 //RegisterForm.js: Webpage allowing the user to register on the website
 
+//Checks if user has successfully registered
 export let regStatus = false;
 
 // Firebase configuration
@@ -26,22 +26,27 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 const auth = getAuth();
 
+//Creates a new user in the database - note Firebase handles the password hashing
 async function newAuth() {
+  //There's a better way to assign variables but I'm too lazy to change it
   let username = document.getElementById('usernameInput').value;
   let password = document.getElementById('passwordInput').value;
-  let hashedPassword = await hashPassword(password);
   let redditName = document.getElementById('redditNameInput').value;
+  //Initiate the Firebase request to register a user
   await createUserWithEmailAndPassword(auth, username, password)
   .then((userCredential) => {
-    // Signed in 
+    // Signed in successfully
     const user = userCredential.user;
     const uid = user.uid;
+    //Write the user's data to the database
     writeUserData(uid, username, redditName);
+    //Confirm to other components that registration was successful
     regStatus = true;
     return true;
     // ...
   })
   .catch((error) => {
+    //Registration failed - likely due to existing user
     const errorCode = error.code;
     const errorMessage = error.message;
     regStatus = false;
@@ -51,18 +56,12 @@ async function newAuth() {
   return regStatus;
 }
 
+//Writes the user's data to the database
 async function writeUserData(userId, name, redditName) {
   set(ref(db, 'users/' + userId), {
     username: name,
     redditName: redditName
   });
-}
-
-async function hashPassword(password) {
-  const saltRounds = 10;
-  const salt = await bcrypt.genSalt(saltRounds);
-  const hash = await bcrypt.hash(password, salt);
-  return hash;
 }
 
 function RegisterForm() {
@@ -75,22 +74,28 @@ function RegisterForm() {
   var [inputError, setInputError] = useState(false);
   var [errorReason, setErrorReason] = useState('');
 
-  {/* Checks if input is non-empty and passwords match, redirects if all good */}
+  {/*Checks if user/pass passes checks, alerts user if registration fails/succeeds*/}
   async function checkInput() {
     if (username === '' || password === '' || redditName === '' || confirmPassword === '') {
+      //A field is empty
       setInputError(true);
       setErrorReason('Empty fields');
     } else if (password !== confirmPassword) {
+      //Passwords don't match
       setInputError(true);
       setErrorReason('Passwords do not match');
     } else if (password.length < 6) {
+      //Password is too short - mandated by Firebase
       setInputError(true);
       setErrorReason('Password must be at least 6 characters');
     } else {
+      //all criteria met, attempt to register
       let regStatus = await newAuth()
       if (regStatus === true) {
+        //Registration successful - alerts user of success
         alert('Registration successful! Please log in.');
       } else {
+        //Registration failed - prompts to try again
         setInputError(true);
         setErrorReason('Invalid username or password');
     }
@@ -101,7 +106,7 @@ function RegisterForm() {
       <header className="App-header">
         {/*title */}
         <h1>Redditify Registration</h1>
-        {/*input prompts and boxes */}
+        {/*Email input */}
         <div className="Login-input-container">
           <label for="usernameInput">Email:</label>
           <input onChange={myInput => {
@@ -110,6 +115,7 @@ function RegisterForm() {
           className='App-username-input' type="text" id="usernameInput" name="username">
           </input>
         </div>
+        {/*Password input */}
         <div className="Login-input-container">
           <label for="passwordInput">Password:</label>
           <input onChange={myInput => {
@@ -118,6 +124,7 @@ function RegisterForm() {
           className='App-username-input' type="password" id="passwordInput" name="password">
           </input>
         </div>
+        {/*Confirm password input */}
         <div className="Login-input-container">
           <label for="confirmPasswordInput">Confirm Password:</label>
           <input onChange={myInput => {
@@ -126,6 +133,7 @@ function RegisterForm() {
           className='App-username-input' type="password" id="confirmPasswordInput" name="confirmPassword">
           </input>
         </div>
+        {/*Reddit username input */}
         <div className="Login-input-container">
           <label for="redditNameInput">Reddit Username:</label>
         </div>

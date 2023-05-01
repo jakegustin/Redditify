@@ -4,7 +4,6 @@ import './App.css';
 import { initializeApp} from "firebase/app";
 import {getAuth, signInWithEmailAndPassword} from "firebase/auth"
 import {getDatabase, ref, get} from "firebase/database"
-import bcrypt from 'bcryptjs';
 
 //RegisterForm.js: Webpage allowing the user to register on the website
 
@@ -27,21 +26,25 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 const auth = getAuth();
 
+//Attempts to login user via Firebase - note passwords are automatically hashed via Firebase
 async function newAuth() {
+  //There's a better way to assign variables but I'm too lazy to change it
   let username = document.getElementById('usernameInput').value;
   let password = document.getElementById('passwordInput').value;
-  let hashedPassword = await hashPassword(password);
+  //Initiate the Firebase request to login a user
   await signInWithEmailAndPassword(auth, username, password)
   .then(async (userCredential)=> {
     // Signed in 
     const user = userCredential.user;
     const uid = user.uid;
+    //Obtain the current user's reddit username
     redditName = await getRedditName(uid);
     logStatus = true;
     return true;
     // ...
   })
   .catch((error) => {
+    //Something went wrong (likely incorrect username/password)
     const errorCode = error.code;
     const errorMessage = error.message;
     logStatus = false;
@@ -51,18 +54,12 @@ async function newAuth() {
   return logStatus;
 }
 
+//A function that obtains the user's reddit username from the database
 async function getRedditName(inputUserId) {
   const redditRef = (ref(db, 'users/' + inputUserId + '/redditName'));
   const snapshot = await get(redditRef);
   let newRedditName = snapshot.val();
   return newRedditName;
-}
-
-async function hashPassword(password) {
-  const saltRounds = 10;
-  const salt = await bcrypt.genSalt(saltRounds);
-  const hash = await bcrypt.hash(password, salt);
-  return hash;
 }
 
 function LoginForm() {
@@ -73,14 +70,17 @@ function LoginForm() {
   var [inputError, setInputError] = useState(false);
   var [errorReason, setErrorReason] = useState('');
 
-  {/* Checks if input is non-empty and passwords match, redirects if all good */}
+  {/* Checks if input is non-empty and then executes login request*/}
   async function checkInput() {
     if (username === '' || password === '') {
+      //A field is empty
       setInputError(true);
       setErrorReason('Empty fields');
     } else {
+      //Input is good, attempt login via Firebase
       let logStatus = await newAuth()
       if (logStatus === true) {
+        //Login was successful, save the user's reddit username to the backend
         fetch('http://localhost:5000/saveRedditLogin', {
           method: 'POST',
           headers: {
@@ -91,9 +91,11 @@ function LoginForm() {
         })
         .then(response => response.json())
         .then(data => {
+          //Backend successfully saved the user's reddit username
           console.log('Success:', data);
         })
         .catch((error) => {
+          //Something went wrong
           console.error('Error:', error);
         });
         alert('Login Successful, welcome u/' + redditName + '! Head to the home page to get started.');
@@ -109,7 +111,7 @@ function LoginForm() {
       <header className="App-header">
         {/*title */}
         <h1>Redditify Login</h1>
-        {/*input prompts and boxes */}
+        {/*Email input */}
         <div className="Login-input-container">
           <label for="usernameInput">Email:</label>
           <input onChange={myInput => {
@@ -118,6 +120,7 @@ function LoginForm() {
           className='App-username-input' type="text" id="usernameInput" name="username">
           </input>
         </div>
+        {/*Password input */}
         <div className="Login-input-container">
           <label htmlFor="passwordInput">Password:</label>
           <input onChange={myInput => {

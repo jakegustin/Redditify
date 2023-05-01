@@ -20,7 +20,9 @@ function LoggedInSpotifyPlaylistGen() {
   var [searchTerm, setSearchTerm] = useState('');
 
   const debouncedFetch = debounce(() => {
+    //Using this awkward debounce mechanism so we don't generate duplicate playlists/requests
     setLoading(true);
+    //Initiate backend request to see if the user is logged in
     fetch('http://localhost:5000/checkRedditLogin', { 
       method: 'GET',
       headers: {
@@ -47,6 +49,7 @@ function LoggedInSpotifyPlaylistGen() {
   }, 500);
 
   function generatePlaylist() {
+    //Initiate backend request to generate a playlist based on reddit name
     if (redditName === '') {
       return false;
     }
@@ -75,7 +78,6 @@ function LoggedInSpotifyPlaylistGen() {
   }
   useEffect(() => {
     debouncedFetch(searchTerm);
-    console.log("THISIS" + redditName)
   }, [searchTerm, redditName]);
 
   return(
@@ -83,6 +85,7 @@ function LoggedInSpotifyPlaylistGen() {
           {/*Basic titles and then a preformatted list should appear unless it errors*/}
           <h1>Redditify</h1>
           <h2>Spotify Playlist Generation</h2>
+          {/*Shows an error if there is one, otherwise shows the posts*/}
           {(errorMessage !== '') ? <p>Error: {errorMessage}. Please try logging in again.</p>
            : <div className='PostNames'> 
               {loading ? 'Loading...' : <div dangerouslySetInnerHTML={{__html: playlists}} /> }

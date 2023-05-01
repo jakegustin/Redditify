@@ -20,7 +20,9 @@ function TopPosts() {
   var [searchTerm, setSearchTerm] = useState(mySub);
 
   const debouncedFetch = debounce((searchTerm) => {
+    //Using this awkward debounce mechanism so we don't generate duplicate playlists/requests
     setLoading(true);
+    //Initiate backend request to get the top posts of the day
     fetch('http://localhost:5000/topposts', { 
       method: 'GET',
       headers: {
@@ -31,8 +33,10 @@ function TopPosts() {
       .then(response => response.json())
       .then(data => {
         if (data['error']) {
+          //Something went wrong in the backend
           setErrorMessage(data['error']);
         } else {
+          //Backend request was successful, set the posts
           setPlaylists(data['status']);
         }
         setLoading(false);
@@ -44,6 +48,7 @@ function TopPosts() {
   }, 500);
 
   useEffect(() => {
+    //Initiate the request upon the page loading in
     debouncedFetch(searchTerm);
   }, [searchTerm]);
   return(
@@ -51,6 +56,7 @@ function TopPosts() {
           {/*Basic titles and then a preformatted list should appear unless it errors*/}
           <h1>Redditify</h1>
           <h2>Spotify Playlist Generation</h2>
+          {/*If there is an error, display it. Otherwise, display the posts*/}
           {(errorMessage !== '') ? <p>Error: {errorMessage}. Please try logging in again.</p>
            : <div className='PostNames'> 
               {loading ? 'Loading...' : <div dangerouslySetInnerHTML={{__html: playlists}} /> }
