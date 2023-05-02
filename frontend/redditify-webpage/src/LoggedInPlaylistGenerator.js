@@ -77,8 +77,23 @@ function LoggedInSpotifyPlaylistGen() {
       return true;
   }
   useEffect(() => {
-    debouncedFetch(searchTerm);
-  }, [searchTerm, redditName]);
+    fetch('http://localhost:5000/checkLogin', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+  })
+    .then(response => response.json())
+    .then(data => {
+      debouncedFetch(searchTerm);
+      })
+  .catch(error => {
+      console.log(error)
+      setErrorMessage('Not logged into Spotify');
+      setLoading(false);
+      }, [searchTerm]);
+  })
 
   return(
       <div className="Default">
