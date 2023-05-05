@@ -99,7 +99,7 @@ function RegisterForm() {
         mode: 'cors',
         body: [username, password, redditName].join('%')
       })
-      window.location.href = '/loginStatus';
+      alert('Registration successful! Please log in.');
     }
   }
 }
@@ -161,10 +161,8 @@ function RegisterForm() {
           <button onClick={e => {
           }} className='App-username-submit'>Go Home</button>
         </Link>
-        </div>
       </header>
     </div>
   );
-}
 
 export default RegisterForm;

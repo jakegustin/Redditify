@@ -89,7 +89,7 @@ function LoginForm() {
           "username": username,
           "password": password
         })
-      }).then(response => { window.location.href = '/loginStatus'; })
+      }).then(response => { alert('Login Successful, welcome u/' + redditName + '! Head to the home page to get started.'); })
     }
   }
 }
@@ -136,6 +136,5 @@ function LoginForm() {
       </header>
     </div>
   );
-}
 
 export default LoginForm;
