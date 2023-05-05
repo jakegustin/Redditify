@@ -4,14 +4,14 @@ import './Default.css';
 
 //TopPosts.js: Returns a list of the top posts on Reddit
 
-function TopPosts() {
+function FindSubreddits() {
     //declaring variable / initialization function for top posts
     var [topposts, setTopPosts] = useState('');
     var [loading, setLoading] = useState(true);
 
     useEffect(() => {
         //fetching top posts from backend
-        fetch('http://localhost:5000/topposts', { 
+        fetch('http://localhost:5000/getSubredditFromListeningHistory', { 
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -33,17 +33,19 @@ function TopPosts() {
     return(
         <div className="Default">
             {/*Basic title and then a preformatted list should appear*/}
-            <h1>Top Posts on Reddit</h1>
+            <h1>Recommended Subreddits for You</h1>
             <div className="PostNames">
             {loading ? 'Loading...' : <div dangerouslySetInnerHTML={{__html: topposts}} /> }
             </div>
+            <div className="App-buttons">
             <Link to="/">
-                <button type="button">
+                <button classname='App-buttons' type="button">
                     Return to Home
                 </button>
             </Link>
+            </div>
         </div>
     );
 }
 
-export default TopPosts;
+export default FindSubreddits;

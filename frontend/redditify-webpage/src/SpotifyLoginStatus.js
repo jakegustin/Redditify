@@ -6,6 +6,7 @@ import './App.css';
 
 function SpotifyLoginStatus() {
   const location = useLocation();
+  //checking url to see if an error code exists
   const errorMessage = new URLSearchParams(location.search).get('errorcode');
   function checkSuccess() {
     if (errorMessage) {
@@ -23,7 +24,7 @@ function SpotifyLoginStatus() {
         {/*buttons to navigate to other pages */}
         <Link to="/">
           <button onClick={e => {
-          }} className='App-username-submit'>Go Home</button>
+          }} className='App-buttons'>Go Home</button>
         </Link>
       </header>
     </div>

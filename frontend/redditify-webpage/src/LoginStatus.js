@@ -3,11 +3,7 @@ import { Link } from 'react-router-dom';
 import './App.css';
 
 //LoginStatus.js: Returns the user's local login status
-
-//Declaring custom username - would use useState, but it errors
-//so imma let it live here for now
-//export let username = '';
-//export let password = '';
+//NOTE: THIS FILE IS NOT USED IN THE FINAL PRODUCT (but im keeping it in case it in fact is)
 
 function LoginStatus() {
   //reinitializing username in case we end up back here.
@@ -40,13 +36,12 @@ function LoginStatus() {
     <div className="App">
       <header className="App-header">
         <p>
-          NEED CODE HERE
           {status}
         </p>
         {/*buttons to navigate to other pages */}
         <Link to="/">
           <button onClick={e => {
-          }} className='App-username-submit'>Go Home</button>
+          }} className='App-buttons'>Go Home</button>
         </Link>
       </header>
     </div>

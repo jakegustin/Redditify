@@ -1,7 +1,7 @@
 import React, {useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import './Default.css';
-import { myName } from "./App.js";
+import { myName, myDepth } from "./App.js";
 
 //ButtonTest.js: Webpage to display the user's posts
 
@@ -18,7 +18,7 @@ function ButtonTest() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({'username': myName})})
+            body: JSON.stringify({'username': myName, 'depth': myDepth})})
         .then(response => response.json())
         .then(data => {
             console.log(data)
@@ -42,11 +42,23 @@ function ButtonTest() {
                 {loading ? 'Loading...' : <div dangerouslySetInnerHTML={{__html: posts}} /> }
             </div>
             {/*Button to return to home page*/}
+            <div className="App-buttons">
+            <Link to="/createUserPlaylist">
+                <button type="button">
+                    Create Spotify Playlist
+                </button>
+            </Link>
+            <Link to="/modifySpotifyGeneration">
+                <button type="button">
+                    Modify Playlist Generation
+                </button>
+            </Link>
             <Link to="/">
                 <button type="button">
                     Return to Home
                 </button>
             </Link>
+            </div>
         </div>
     );
 }
