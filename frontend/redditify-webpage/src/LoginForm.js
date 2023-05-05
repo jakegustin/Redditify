@@ -70,38 +70,26 @@ function LoginForm() {
   var [inputError, setInputError] = useState(false);
   var [errorReason, setErrorReason] = useState('');
 
-  {/* Checks if input is non-empty and then executes login request*/}
-  async function checkInput() {
+
+  {/* Checks if input is non-empty, redirects if all good*/ }
+  function checkInput() {
     if (username === '' || password === '') {
       //A field is empty
       setInputError(true);
       setErrorReason('Empty fields');
     } else {
-      //Input is good, attempt login via Firebase
-      let logStatus = await newAuth()
-      if (logStatus === true) {
-        //Login was successful, save the user's reddit username to the backend
-        fetch('http://localhost:5000/saveRedditLogin', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          },
-          body: JSON.stringify({'username': redditName}),
+
+      fetch('http://localhost:5000/applogin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        mode: 'cors',
+        body: JSON.stringify({
+          "username": username,
+          "password": password
         })
-        .then(response => response.json())
-        .then(data => {
-          //Backend successfully saved the user's reddit username
-          console.log('Success:', data);
-        })
-        .catch((error) => {
-          //Something went wrong
-          console.error('Error:', error);
-        });
-        alert('Login Successful, welcome u/' + redditName + '! Head to the home page to get started.');
-      } else {
-        setInputError(true);
-        setErrorReason('Invalid username or password');
+      }).then(response => { window.location.href = '/loginStatus'; })
     }
   }
 }
@@ -115,26 +103,27 @@ function LoginForm() {
         <div className="Login-input-container">
           <label for="usernameInput">Email:</label>
           <input onChange={myInput => {
-              setUsername(myInput.target.value);
+            setUsername(myInput.target.value);
           }}
-          className='App-username-input' type="text" id="usernameInput" name="username">
+            className='App-username-input' type="text" id="usernameInput" name="username">
           </input>
         </div>
         {/*Password input */}
         <div className="Login-input-container">
           <label htmlFor="passwordInput">Password:</label>
           <input onChange={myInput => {
-              setPassword(myInput.target.value);
+            setPassword(myInput.target.value);
           }}
-          className='App-username-input' type="password" id="passwordInput" name="password">
+            className='App-username-input' type="password" id="passwordInput" name="password">
           </input>
         </div>
         {/*Display error message if needed */}
         <div className='App-buttons'>
         {inputError && <p>Invalid Input: {errorReason}</p>}
         {/*buttons to navigate to other pages */}
-          <button onClick={e => {checkInput()
-          }} className='App-username-submit'>Login</button>
+        <button onClick={e => {
+          checkInput()
+        }} className='App-username-submit'>Login</button>
         <Link to="/registerForm">
           <button onClick={e => {
           }} className='App-username-submit'>New User? Register</button>

@@ -3,7 +3,11 @@ import { Link } from 'react-router-dom';
 import './App.css';
 
 //LoginStatus.js: Returns the user's local login status
-//NOTE: THIS FILE IS NOT USED IN THE FINAL PRODUCT (but im keeping it in case it in fact is)
+
+//Declaring custom username - would use useState, but it errors
+//so imma let it live here for now
+//export let username = '';
+//export let password = '';
 
 function LoginStatus() {
   //reinitializing username in case we end up back here.
@@ -12,36 +16,16 @@ function LoginStatus() {
   var [password, setPassword] = useState('');
   var [redditName, setRedditName] = useState('');
   var [defaultReddit, setDefaultReddit] = useState(false);
-  var [status, setStatus] = useState('')
-
-  //fetching the loginstatus message from the backend
-  useEffect(() => {
-    fetch('http://localhost:5000/applogin', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data)
-        setStatus(data['msg']);
-      })
-      .catch(error => {
-        console.log(error)
-      })
-  }, []);
   return (
     <div className="App">
       <header className="App-header">
         <p>
-          {status}
+          NEED CODE HERE
         </p>
         {/*buttons to navigate to other pages */}
         <Link to="/">
           <button onClick={e => {
-          }} className='App-buttons'>Go Home</button>
+          }} className='App-username-submit'>Go Home</button>
         </Link>
       </header>
     </div>
