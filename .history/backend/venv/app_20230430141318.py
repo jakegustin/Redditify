@@ -158,7 +158,6 @@ def applogin():
     db = connect_db()
     res = db.execute('SELECT username FROM userinfo WHERE username = ?', (data['username'],))
     if res.fetchone() is None:
-        session['auth'] = False
         print('isNone')
     else:
         session['auth'] = True
@@ -172,7 +171,6 @@ def applogin():
 def getAuth():
     res = session.get('auth', False)
     msg = ''
-    
     if res:
         msg = "success"
     else:

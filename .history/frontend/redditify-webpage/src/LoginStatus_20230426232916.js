@@ -16,32 +16,11 @@ function LoginStatus() {
   var [password, setPassword] = useState('');
   var [redditName, setRedditName] = useState('');
   var [defaultReddit, setDefaultReddit] = useState(false);
-  var [status, setStatus] = useState('')
-
-  //fetching the loginstatus message from the backend
-  useEffect(() => {
-    fetch('http://localhost:5000/applogin', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data)
-        setStatus(data['msg']);
-      })
-      .catch(error => {
-        console.log(error)
-      })
-  }, []);
   return (
     <div className="App">
       <header className="App-header">
         <p>
           NEED CODE HERE
-          {status}
         </p>
         {/*buttons to navigate to other pages */}
         <Link to="/">

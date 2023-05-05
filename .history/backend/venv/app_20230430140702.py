@@ -158,21 +158,17 @@ def applogin():
     db = connect_db()
     res = db.execute('SELECT username FROM userinfo WHERE username = ?', (data['username'],))
     if res.fetchone() is None:
-        session['auth'] = False
         print('isNone')
     else:
         session['auth'] = True
     db.commit()
     db.close()
-    
-    # no actual meaning for the returned val
-    return "response" 
+    return
 
 @app.route('/applogin', methods=['GET'])
 def getAuth():
     res = session.get('auth', False)
     msg = ''
-    
     if res:
         msg = "success"
     else:

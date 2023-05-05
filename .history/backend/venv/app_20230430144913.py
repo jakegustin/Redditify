@@ -16,7 +16,7 @@ global sp
 sp = None
 
 #secret key to protect user session data in flask
-app.secret_key = os.environ.get("FLASK_SECRET_KEY")
+app.secret_key = "sadoijasd"
 
 # name says it all - gets multiple posts from a list of post titles
 def get_multiple_posts(res, num):
@@ -170,14 +170,10 @@ def applogin():
 
 @app.route('/applogin', methods=['GET'])
 def getAuth():
-    res = session.get('auth', False)
-    msg = ''
+    cookie_header = request.headers.get('Cookie')
+    print(cookie_header)
     
-    if res:
-        msg = "success"
-    else:
-        msg = "username not exist"
-    return {'msg': msg}
+    return {'msg': 'msg'}
 
 # this needs to be at the end of the file to run the app
 if __name__ == '__main__':

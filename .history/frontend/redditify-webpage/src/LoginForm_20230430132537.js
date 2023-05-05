@@ -2,42 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './App.css';
 
-//RegisterForm.js: Webpage allowing the user to register on the website
+//LoginForm.js: Webpage that allows for local user login
 
 //Declaring custom username - would use useState, but it errors
 //so imma let it live here for now
 //export let username = '';
 //export let password = '';
 
-function RegisterForm() {
+function LoginForm() {
   //reinitializing username in case we end up back here.
   //username = ''
   var [username, setUsername] = useState('');
   var [password, setPassword] = useState('');
-  var [confirmPassword, setConfirmPassword] = useState('');
-  var [redditName, setRedditName] = useState('');
   var [inputError, setInputError] = useState(false);
   var [errorReason, setErrorReason] = useState('');
 
-  {/* Checks if input is non-empty and passwords match, redirects if all good */ }
+  {/* Checks if input is non-empty, redirects if all good*/ }
   function checkInput() {
-    if (username === '' || password === '' || redditName === '' || confirmPassword === '') {
+    if (username === '' || password === '') {
       setInputError(true);
       setErrorReason('Empty fields');
-    } else if (password !== confirmPassword) {
-      setInputError(true);
-      setErrorReason('Passwords do not match');
     } else {
-      // send username, password, reddit name to backend database via fetch
-      fetch('http://localhost:5000/register', {
-
+      fetch('http://localhost:5000/applogin', {
         method: 'POST',
         headers: {
-          'Content-Type': 'text/plain'
+          'Content-Type': 'application/json'
         },
         mode: 'cors',
-        body: [username, password, redditName].join('%')
+        body: JSON.stringify({
+          'username': username,
+          'password': password
+        })
       })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error(error))
       window.location.href = '/loginStatus';
     }
   }
@@ -45,7 +44,7 @@ function RegisterForm() {
     <div className="App">
       <header className="App-header">
         {/*title */}
-        <h1>Redditify Registration</h1>
+        <h1>Redditify Login</h1>
         {/*input prompts and boxes */}
         <div className="Login-input-container">
           <label for="usernameInput">Username:</label>
@@ -63,34 +62,15 @@ function RegisterForm() {
             className='App-username-input' type="password" id="passwordInput" name="password">
           </input>
         </div>
-        <div className="Login-input-container">
-          <label for="confirmPasswordInput">Confirm Password:</label>
-          <input onChange={myInput => {
-            setConfirmPassword(myInput.target.value);
-          }}
-            className='App-username-input' type="password" id="confirmPasswordInput" name="confirmPassword">
-          </input>
-        </div>
-        <div className="Login-input-container">
-          <label for="redditNameInput">Reddit Username:</label>
-        </div>
-        <div className="Login-input-redditName-container">
-          <label for="redditNameInput">r/</label>
-          <input onChange={myInput => {
-            setRedditName(myInput.target.value);
-          }}
-            className='App-username-input' type="text" id="redditNameInput" name="password">
-          </input>
-        </div>
         {/*Display error message if needed */}
-        {inputError && <p>Invalid input: {errorReason}.</p>}
+        {inputError && <p>Invalid Input: {errorReason}</p>}
         {/*buttons to navigate to other pages */}
         <button onClick={e => {
           checkInput()
-        }} className='App-username-submit'>Register</button>
-        <Link to="/loginform">
+        }} className='App-username-submit'>Login</button>
+        <Link to="/registerForm">
           <button onClick={e => {
-          }} className='App-username-submit'>Existing User? Log In</button>
+          }} className='App-username-submit'>New User? Register</button>
         </Link>
         <Link to="/">
           <button onClick={e => {
@@ -101,4 +81,4 @@ function RegisterForm() {
   );
 }
 
-export default RegisterForm;
+export default LoginForm;

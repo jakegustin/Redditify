@@ -41,7 +41,7 @@ function LoginStatus() {
       <header className="App-header">
         <p>
           NEED CODE HERE
-          {status}
+          {msg}
         </p>
         {/*buttons to navigate to other pages */}
         <Link to="/">

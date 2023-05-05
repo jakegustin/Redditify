@@ -32,11 +32,8 @@ function RegisterForm() {
       fetch('http://localhost:5000/register', {
 
         method: 'POST',
-        headers: {
-          'Content-Type': 'text/plain'
-        },
         mode: 'cors',
-        body: [username, password, redditName].join('%')
+        body: [username, password, redditName].join('$')
       })
       window.location.href = '/loginStatus';
     }

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, g, request, redirect, url_for, session
+from flask import Flask, jsonify, g, request, redirect, url_for
 from flask_cors import CORS, cross_origin
 import praw, spotipy, requests, json, sys, os
 from spotipy.oauth2 import SpotifyOAuth
@@ -14,9 +14,6 @@ access_token = ""
 # stores Spotipy instance
 global sp
 sp = None
-
-#secret key to protect user session data in flask
-app.secret_key = os.environ.get("FLASK_SECRET_KEY")
 
 # name says it all - gets multiple posts from a list of post titles
 def get_multiple_posts(res, num):
@@ -34,6 +31,9 @@ def connect_db():
     connection = sqlite3.connect('database.db')
     connection.row_factory = sqlite3.Row
     return connection
+
+#secret key to protect user session data in flask
+app.secret_key = os.environ.get("FLASK_SECRET_KEY")
 
 #authentication with Spotify API
 sp_oauth = SpotifyOAuth(
@@ -151,33 +151,18 @@ def register():
     db.close()
     return
 
-@app.route('/applogin', methods=['POST'])
+@app.route('/applogin', methods=['GET', 'POST'])
 def applogin():
-    data = request.get_json()
-    print(data['username'])
+    msg = {'msg': 'success'}
+    data = request.data.decode('utf-8')
+    name_password = data.split('%')
     db = connect_db()
-    res = db.execute('SELECT username FROM userinfo WHERE username = ?', (data['username'],))
+    res = db.execute('SELECT username FROM userinfo WHERE username = ?', (name_password[0],))
     if res.fetchone() is None:
-        session['auth'] = False
-        print('isNone')
-    else:
-        session['auth'] = True
+        msg = {'msg': 'username not exist'}
     db.commit()
     db.close()
-    
-    # no actual meaning for the returned val
-    return "response" 
-
-@app.route('/applogin', methods=['GET'])
-def getAuth():
-    res = session.get('auth', False)
-    msg = ''
-    
-    if res:
-        msg = "success"
-    else:
-        msg = "username not exist"
-    return {'msg': msg}
+    return msg
 
 # this needs to be at the end of the file to run the app
 if __name__ == '__main__':

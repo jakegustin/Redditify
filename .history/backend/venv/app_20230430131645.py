@@ -15,9 +15,6 @@ access_token = ""
 global sp
 sp = None
 
-#secret key to protect user session data in flask
-app.secret_key = os.environ.get("FLASK_SECRET_KEY")
-
 # name says it all - gets multiple posts from a list of post titles
 def get_multiple_posts(res, num):
     post_names_str = ""
@@ -34,6 +31,9 @@ def connect_db():
     connection = sqlite3.connect('database.db')
     connection.row_factory = sqlite3.Row
     return connection
+
+#secret key to protect user session data in flask
+app.secret_key = os.environ.get("FLASK_SECRET_KEY")
 
 #authentication with Spotify API
 sp_oauth = SpotifyOAuth(
@@ -158,21 +158,18 @@ def applogin():
     db = connect_db()
     res = db.execute('SELECT username FROM userinfo WHERE username = ?', (data['username'],))
     if res.fetchone() is None:
-        session['auth'] = False
-        print('isNone')
+        msg = {'msg': 'username not exist'}
     else:
+        msg = {'msg': 'success'}
         session['auth'] = True
     db.commit()
     db.close()
-    
-    # no actual meaning for the returned val
-    return "response" 
+    return msg
 
 @app.route('/applogin', methods=['GET'])
 def getAuth():
     res = session.get('auth', False)
     msg = ''
-    
     if res:
         msg = "success"
     else:

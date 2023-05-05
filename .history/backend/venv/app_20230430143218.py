@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, g, request, redirect, url_for, session
+from flask import Flask, jsonify, g, request, redirect, url_for, session, make_response
 from flask_cors import CORS, cross_origin
 import praw, spotipy, requests, json, sys, os
 from spotipy.oauth2 import SpotifyOAuth
@@ -16,7 +16,7 @@ global sp
 sp = None
 
 #secret key to protect user session data in flask
-app.secret_key = os.environ.get("FLASK_SECRET_KEY")
+app.secret_key = 'my secret'
 
 # name says it all - gets multiple posts from a list of post titles
 def get_multiple_posts(res, num):
@@ -165,19 +165,28 @@ def applogin():
     db.commit()
     db.close()
     
-    # no actual meaning for the returned val
-    return "response" 
+    response = make_response('response')
+    response.set_cookie('session', session.sid)
+    return response
 
 @app.route('/applogin', methods=['GET'])
 def getAuth():
-    res = session.get('auth', False)
-    msg = ''
-    
-    if res:
-        msg = "success"
-    else:
-        msg = "username not exist"
-    return {'msg': msg}
+    session_id = request.cookies.get('session')
+    if session_id is not None:
+        with app.app_context():
+            session_interface = app.session_interface
+            session = session_interface.open_session(app, session_id)
+            if session is not None:
+                res = session.get('auth')
+                if res:
+                    msg = "success"
+                else:
+                    msg = "username not exist"
+                return {'msg': msg}
+
+    # If session is not found or auth key is not set, return an error response
+    return {'msg': 'Error: session not found or auth key not set'}
+
 
 # this needs to be at the end of the file to run the app
 if __name__ == '__main__':

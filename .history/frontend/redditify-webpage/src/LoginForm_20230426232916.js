@@ -17,23 +17,13 @@ function LoginForm() {
   var [inputError, setInputError] = useState(false);
   var [errorReason, setErrorReason] = useState('');
 
-  {/* Checks if input is non-empty, redirects if all good*/ }
+  {/* Checks if input is non-empty, redirects if all good*/}
   function checkInput() {
     if (username === '' || password === '') {
       setInputError(true);
       setErrorReason('Empty fields');
     } else {
-      fetch('http://localhost:5000/applogin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        mode: 'cors',
-        body: JSON.stringify({
-          "username": username,
-          "password": password
-        })
-      }).then(response => { window.location.href = '/loginStatus'; })
+      window.location.href = '/loginStatus';
     }
   }
   return (
@@ -45,25 +35,24 @@ function LoginForm() {
         <div className="Login-input-container">
           <label for="usernameInput">Username:</label>
           <input onChange={myInput => {
-            setUsername(myInput.target.value);
+              setUsername(myInput.target.value);
           }}
-            className='App-username-input' type="text" id="usernameInput" name="username">
+          className='App-username-input' type="text" id="usernameInput" name="username">
           </input>
         </div>
         <div className="Login-input-container">
           <label for="passwordInput">Password:</label>
           <input onChange={myInput => {
-            setPassword(myInput.target.value);
+              setPassword(myInput.target.value);
           }}
-            className='App-username-input' type="password" id="passwordInput" name="password">
+          className='App-username-input' type="password" id="passwordInput" name="password">
           </input>
         </div>
         {/*Display error message if needed */}
         {inputError && <p>Invalid Input: {errorReason}</p>}
         {/*buttons to navigate to other pages */}
-        <button onClick={e => {
-          checkInput()
-        }} className='App-username-submit'>Login</button>
+          <button onClick={e => {checkInput()
+          }} className='App-username-submit'>Login</button>
         <Link to="/registerForm">
           <button onClick={e => {
           }} className='App-username-submit'>New User? Register</button>

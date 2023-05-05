@@ -23,17 +23,8 @@ function LoginForm() {
       setInputError(true);
       setErrorReason('Empty fields');
     } else {
-      fetch('http://localhost:5000/applogin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        mode: 'cors',
-        body: JSON.stringify({
-          "username": username,
-          "password": password
-        })
-      }).then(response => { window.location.href = '/loginStatus'; })
+
+      window.location.href = '/loginStatus';
     }
   }
   return (

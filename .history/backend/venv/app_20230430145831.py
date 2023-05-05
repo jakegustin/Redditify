@@ -3,9 +3,15 @@ from flask_cors import CORS, cross_origin
 import praw, spotipy, requests, json, sys, os
 from spotipy.oauth2 import SpotifyOAuth
 import sqlite3
+from flask_session import Session
 
 # intializes an instance of the flask app
 app = Flask(__name__) 
+
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+
 # allows cross origin requests
 CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
 # stores access token across the whole app
@@ -16,7 +22,7 @@ global sp
 sp = None
 
 #secret key to protect user session data in flask
-app.secret_key = os.environ.get("FLASK_SECRET_KEY")
+app.secret_key = "asdd"
 
 # name says it all - gets multiple posts from a list of post titles
 def get_multiple_posts(res, num):
@@ -162,6 +168,7 @@ def applogin():
         print('isNone')
     else:
         session['auth'] = True
+    print(request.cookies)
     db.commit()
     db.close()
     

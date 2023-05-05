@@ -1,8 +1,7 @@
-from flask import Flask, jsonify, g, request, redirect, url_for, session
+from flask import Flask, jsonify, g, request, redirect, url_for
 from flask_cors import CORS, cross_origin
 import praw, spotipy, requests, json, sys, os
 from spotipy.oauth2 import SpotifyOAuth
-import sqlite3
 
 # intializes an instance of the flask app
 app = Flask(__name__) 
@@ -15,9 +14,6 @@ access_token = ""
 global sp
 sp = None
 
-#secret key to protect user session data in flask
-app.secret_key = os.environ.get("FLASK_SECRET_KEY")
-
 # name says it all - gets multiple posts from a list of post titles
 def get_multiple_posts(res, num):
     post_names_str = ""
@@ -29,11 +25,8 @@ def get_multiple_posts(res, num):
         post_names_str += "~ " + res[i] + "<br>"
     return post_names_str
 
-# method to get connection with the user info database
-def connect_db():
-    connection = sqlite3.connect('database.db')
-    connection.row_factory = sqlite3.Row
-    return connection
+#secret key to protect user session data in flask
+app.secret_key = os.environ.get("FLASK_SECRET_KEY")
 
 #authentication with Spotify API
 sp_oauth = SpotifyOAuth(
@@ -140,44 +133,6 @@ def getSubredditPosts():
         return {'postNames': postNamesStr}
 
 
-@app.route("/register", methods=['POST'])
-def register():
-    data = request.data.decode('utf-8')
-    info_list = data.split('%')
-    db = connect_db()
-    db.execute('INSERT INTO userinfo (username, userpassword, redditname) VALUES (?, ?, ?)',
-                         (info_list[0], info_list[1], info_list[2]))
-    db.commit()
-    db.close()
-    return
-
-@app.route('/applogin', methods=['POST'])
-def applogin():
-    data = request.get_json()
-    print(data['username'])
-    db = connect_db()
-    res = db.execute('SELECT username FROM userinfo WHERE username = ?', (data['username'],))
-    if res.fetchone() is None:
-        session['auth'] = False
-        print('isNone')
-    else:
-        session['auth'] = True
-    db.commit()
-    db.close()
-    
-    # no actual meaning for the returned val
-    return "response" 
-
-@app.route('/applogin', methods=['GET'])
-def getAuth():
-    res = session.get('auth', False)
-    msg = ''
-    
-    if res:
-        msg = "success"
-    else:
-        msg = "username not exist"
-    return {'msg': msg}
 
 # this needs to be at the end of the file to run the app
 if __name__ == '__main__':

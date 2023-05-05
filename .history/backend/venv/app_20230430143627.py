@@ -16,7 +16,7 @@ global sp
 sp = None
 
 #secret key to protect user session data in flask
-app.secret_key = os.environ.get("FLASK_SECRET_KEY")
+app.secret_key = 'mykey'
 
 # name says it all - gets multiple posts from a list of post titles
 def get_multiple_posts(res, num):
@@ -170,7 +170,7 @@ def applogin():
 
 @app.route('/applogin', methods=['GET'])
 def getAuth():
-    res = session.get('auth', False)
+    res = session['auth']
     msg = ''
     
     if res:
